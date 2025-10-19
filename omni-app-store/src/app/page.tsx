@@ -3,19 +3,30 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
-      <header className="flex items-center justify-between mx-4 mb-2 p-6 bg-gray-800/80 backdrop-blur-lg border-b border-gray-700/50 sticky top-0 z-50 shadow-xl rounded-2xl"> {/* Applied exact same structure as your working code */}
-        {/* Logo container */}
+      {/* Background elements for blur effect */}
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"></div>
+      
+      <header
+        className="flex items-center justify-between mx-2 mb-2 mt-2 p-6 sticky top-0 z-50 rounded-2xl h-20 bg-transparent bg-gray-900/80 border-gray-800 border-0 shadow-xl backdrop-blur-lg"
+      >
+        {/* Left side with logo and spacing */}
         <div className="flex items-center">
-          {/* Spacer div to push logo away from edge */}
-          <div className="w-16 h-4 bg-transparent">&nbsp;</div>
           <Image
             src="/Omnifactory_logo.png"
             alt="OMNI Logo"
-            width={240} // Fixed width
-            height={60} // Fixed height
-            className="object-contain w-[240px] h-[60px]" // Fixed dimensions
+            width={200}
+            height={50}
+            className="object-contain h-24 w-[250px] ml-24"
+            style={{ marginLeft: '12px' }}
             priority
           />
+        </div>
+
+        {/* Center title - absolutely positioned */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <h1 className="text-3xl font-semibold tracking-wide text-gray-400 ">
+            Omni App Store
+          </h1>
         </div>
 
         {/* Right side container */}
