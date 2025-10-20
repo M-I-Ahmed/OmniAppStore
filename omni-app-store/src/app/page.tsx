@@ -41,11 +41,7 @@ export default function Home() {
             priority
           />
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <h1 className="text-4xl font-semibold tracking-wide text-shadow-white ">
-          
-          </h1>
-        </div>
+
         <div className="flex items-center gap-6">
           <div className="
             w-12 h-12
@@ -149,7 +145,7 @@ export default function Home() {
       </main>
 
       <section className="h-screen bg-transparent flex items-center justify-center">
-        <p className="text-4xl text-gray-400">Scroll Down to See Header Change!</p>
+      
       </section>
     </div>
   );
