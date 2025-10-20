@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AppDetails from "@/components/AppDetails";
 
 interface PageProps {
   params: {
@@ -110,46 +111,10 @@ export default function AppDetailsPage({ params }: { params: { id: string } }) {
             Back to Apps
           </button>
 
-          {/* App Details Content */}
-          <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-8">
-            {/* Flex grid layout */}
-              <div className = "grid grid-cols-2 gap-8">
-                {/* left */}
-                <div> 
-                  <h1 className="text-4xl font-bold text-white mb-6">{appName}</h1>
-                  <div className="text-gray-300 space-y-4">
-                    <h1 className="text-2xl font-semibold text-gray-400">Description</h1>
-                    <p>Description of the app goes here</p>
-                  </div>
-                  <div className ="text-gray-300 space-y-4 mt-4">
-                    <h1 className="text-2xl font-semibold text-gray-400">Features</h1>
-                  </div>
-                </div>
-                {/* right */}
-                <div className="text-gray-300 space-y-4 mt-4">
-                  <div>
-                    <h1 className="text-2xl font-semibold text-gray-400">Developer</h1>
-                    <p>Developer information goes here</p>
-                  </div>
-                  <div className="relative rounded-xl overflow-hidden bg-white/5 border border-white/10">
-                    <Image
-                      src="/vercel.svg" 
-                      alt={`${appName} preview`}
-                      width={500}
-                      height={400}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                </div>
-              </div>
-             
-
-            </div>
-          </div>
-        </div>
+          <AppDetails appName={appName} />
 
 
+      </div>
       </main>
 
       <section className="h-screen bg-transparent flex items-center justify-center">
