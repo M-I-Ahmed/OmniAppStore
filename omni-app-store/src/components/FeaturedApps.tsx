@@ -1,12 +1,13 @@
 import AppTile from './AppTile';
 
 const FEATURED_APPS = [
-  { id: 1, name: 'Robot Path Planner', icon: '/vercel.svg' },
-  { id: 2, name: 'Quality Inspector AI', icon: '/vercel.svg' },
-  { id: 3, name: 'Maintenance Predictor', icon: '/vercel.svg' },
-  { id: 4, name: 'CNC Optimizer', icon: '/vercel.svg' },
-  { id: 5, name: 'Sensor Dashboard', icon: '/vercel.svg' },
-  { id: 6, name: 'Process Monitor', icon: '/vercel.svg' },
+  { id: '1', name: 'Demo App', icon: '/vercel.svg' },
+  { id: '2', name: 'Quality Inspector AI', icon: '/vercel.svg' },
+  { id: '3', name: 'Maintenance Predictor', icon: '/vercel.svg' },
+  { id: '4', name: 'CNC Optimizer', icon: '/vercel.svg' },
+  { id: '5', name: 'Sensor Dashboard', icon: '/vercel.svg' },
+  { id: '6', name: 'Process Monitor', icon: '/vercel.svg' },
+  { id: '7', name: 'Robot Path Planner', icon: '/vercel.svg' },
 ];
 
 export default function FeaturedApps() {
@@ -14,10 +15,10 @@ export default function FeaturedApps() {
     <div className="w-full mt-16">
       <h2 className="text-2xl font-semibold text-white mb-6 px-8">Featured Applications</h2>
       <div className="relative">
-        <div className="overflow-x-scroll scrollbar-hide">
+        <div className="overflow-x-scroll">
           <div className="flex pb-6 px-8" style={{ width: 'max-content' }}>
             {FEATURED_APPS.map((app) => (
-              <AppTile key={app.id} name={app.name} icon={app.icon} />
+              <AppTile key={app.id} id={app.id} name={app.name} icon={app.icon} />
             ))}
           </div>
         </div>

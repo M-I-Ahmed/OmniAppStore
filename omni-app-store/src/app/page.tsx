@@ -79,7 +79,7 @@ export default function Home() {
 
       <main className="flex-grow flex flex-col items-center justify-center">
         <div className="container px-8 flex flex-col items-center">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-white text-center mt-35">
+          <h1 className="text-6xl md:text-6.5xl font-extrabold text-white text-center mt-35">
             Welcome to the Omni App Store
           </h1>
           <p className="text-xl md:text-2xl text-gray-400 font-light text-center mt-8">
