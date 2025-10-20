@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import QuickFilterPills from "@/components/QuickFilterPills";
+import FeaturedApps from "@/components/FeaturedApps";
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -78,10 +79,10 @@ export default function Home() {
 
       <main className="flex-grow flex flex-col items-center justify-center">
         <div className="container px-8 flex flex-col items-center">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-white text-center mt-40">
+          <h1 className="text-6xl md:text-7xl font-extrabold text-white text-center mt-35">
             Welcome to the Omni App Store
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 font-light text-center mt-6">
+          <p className="text-xl md:text-2xl text-gray-400 font-light text-center mt-8">
             Your industrial application store
           </p>
 
@@ -142,6 +143,8 @@ export default function Home() {
             ">
               Explore Applications
             </button>
+
+          <FeaturedApps />
         </div>
       </main>
 
