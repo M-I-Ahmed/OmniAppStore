@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import DropDownDescription from "./DropDownDescription";
 
 interface AppDetailsProps {
   appName: string;
@@ -8,51 +9,54 @@ interface AppDetailsProps {
 
 export default function AppDetails({ appName }: AppDetailsProps) {
   return (
-    <div className="flex gap-8 min-h-screen">
+    <div className="flex gap-8 min-h-screen bg-white/5 backdrop-blur-md rounded-4xl p-8">
       {/* Left Column - Scrollable Content */}
       <div className="w-4/5 space-y-6">
-        <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-8">
+        <div className="p-8">
           <h1 className="text-4xl font-bold text-white/70 mb-8">{appName}</h1>
           
             <section className="mb-8 ">
-                <h2 className="text-2xl text-cyan-500/80 font-semibold mb-4">Description</h2>
+                <h2 className="text-2xl text-cyan-400 font-semibold mb-4">Description</h2>
                 <p className="text-gray-400">Description of the app goes here</p>
             </section>
 
             <section className="mb-8  ">
-                <h2 className="text-2xl text-cyan-500/80 font-semibold mb-4">Features</h2>
-                <ul className="text-gray-400 list-disc pl-4 space-y-2">
-                <li>Feature 1</li>
-                <li>Feature 2</li>
-                <li>Feature 3</li>
-                </ul>
+                <h2 className="text-2xl text-cyan-400 font-semibold mb-4">Features</h2>
+                    <ul className="text-gray-400 list-disc pl-4 space-y-2">
+                        <li>Feature 1</li>
+                        <li>Feature 2</li>
+                        <li>Feature 3</li>
+                    </ul>
             </section>
 
             <section className="mb-8 ">
-                <h2 className="text-2xl text-cyan-500/80 font-semibold mb-4">Recommended Assets</h2>
-                <ul className="text-gray-400 list-disc pl-4 space-y-2">
-                <li>Asset 1</li>
-                <li>Asset 2</li>
-                <li>Asset 3</li>
-                </ul>
+                <DropDownDescription title="Recommended Assets">
+                    <ul className="text-gray-400 list-disc pl-4 space-y-2">
+                        <li>Asset 1</li>
+                        <li>Asset 2</li>
+                        <li>Asset 3</li>
+                    </ul>
+                </DropDownDescription>
             </section> 
 
             <section className="mb-8 ">
-                <h2 className="text-2xl text-cyan-500/80 font-semibold mb-4">Compatible Assets</h2>
-                <ul className="text-gray-400 list-disc pl-4 space-y-2">
-                    <li>Compatible Asset 1</li>
-                    <li>Compatible Asset 2</li>
-                    <li>Compatible Asset 3</li>
-                </ul>
+                <DropDownDescription title="Compatible Assets">
+                    <ul className="text-gray-400 list-disc pl-4 space-y-2">
+                        <li>Compatible Asset 1</li>
+                        <li>Compatible Asset 2</li>
+                        <li>Compatible Asset 3</li>
+                    </ul>
+                </DropDownDescription>
             </section>
 
             <section className="mb-8 ">
-                <h2 className="text-2xl text-cyan-500/80 font-semibold mb-4">Dependencies</h2>
-                <ul className="text-gray-400 list-disc pl-4 space-y-2">
-                <li>Dependency 1</li>
-                <li>Dependency 2</li>
-                <li>Dependency 3</li>
-                </ul>
+                <DropDownDescription title="Dependencies">
+                    <ul className="text-gray-400 list-disc pl-4 space-y-2">
+                        <li>Dependency 1</li>
+                        <li>Dependency 2</li>
+                        <li>Dependency 3</li>
+                    </ul>
+                </DropDownDescription>
             </section>
 
 
@@ -73,6 +77,11 @@ export default function AppDetails({ appName }: AppDetailsProps) {
                 className="object-contain w-full h-full"
               />
             </div>
+
+            <section className="mt-15">
+                <h2 className="text-xl text-gray-400 font-semibold mb-4">Developed by</h2>    
+            </section>
+
 
             {/* This section will contain the trust badges */}
             <section className="mt-8">
