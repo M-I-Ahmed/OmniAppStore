@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import DropDownDescription from './DropDownDescription';
 
 type Tab = {
   id: string;
@@ -37,7 +38,43 @@ export default function AppTabs({ tabs }: AppTabsProps) {
 
       {/* Tab Content */}
       <div className="p-8">
-        {tabs.find(tab => tab.id === activeTab)?.content}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* Description Section */}
+            <div className="mb-8">
+              <h2 className="text-2xl text-cyan-400 mb-4">Description</h2>
+              <p className="text-gray-400">Description of the app goes here</p>
+            </div>
+
+            {/* Features Dropdown */}
+            <DropDownDescription title="Features">
+              <ul className="list-disc pl-4 text-gray-400 space-y-2">
+                <li>Feature 1</li>
+                <li>Feature 2</li>
+                <li>Feature 3</li>
+              </ul>
+            </DropDownDescription>
+
+            {/* Recommended Assets Dropdown */}
+            <DropDownDescription title="Recommended Assets">
+              <ul className="list-disc pl-4 text-gray-400 space-y-2">
+                <li>Asset 1</li>
+                <li>Asset 2</li>
+                <li>Asset 3</li>
+              </ul>
+            </DropDownDescription>
+
+            {/* Compatible Assets Dropdown */}
+            <DropDownDescription title="Compatible Assets">
+              <ul className="list-disc pl-4 text-gray-400 space-y-2">
+                <li>Compatible Asset 1</li>
+                <li>Compatible Asset 2</li>
+                <li>Compatible Asset 3</li>
+              </ul>
+            </DropDownDescription>
+          </div>
+        )}
+        {activeTab !== 'overview' && tabs.find(tab => tab.id === activeTab)?.content}
       </div>
     </div>
   );

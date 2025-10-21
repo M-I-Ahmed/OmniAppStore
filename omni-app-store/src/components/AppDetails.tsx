@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import AppTabs from "./AppDetailTabs";
+import DropDownDescription from "./DropDownDescription";
 
 interface AppDetailsProps {
   appName: string;
@@ -11,52 +12,9 @@ interface AppDetailsProps {
 export default function AppDetails({ appName, tagline = "App Tagline" }: AppDetailsProps) {
   const tabs = [
     {
-      id: 'description',
-      label: 'Description',
-      content: (
-        <div className="space-y-4">
-          <p className="text-gray-400">Description of the app goes here</p>
-        </div>
-      )
-    },
-    {
-      id: 'features',
-      label: 'Features',
-      content: (
-        <div className="space-y-4">
-          <ul className="list-disc pl-4 text-gray-400">
-            <li>Feature 1</li>
-            <li>Feature 2</li>
-            <li>Feature 3</li>
-          </ul>
-        </div>
-      )
-    },
-    {
-      id: 'recommended',
-      label: 'Recommended Assets',
-      content: (
-        <div className="space-y-4">
-          <ul className="list-disc pl-4 text-gray-400">
-            <li>Asset 1</li>
-            <li>Asset 2</li>
-            <li>Asset 3</li>
-          </ul>
-        </div>
-      )
-    },
-    {
-      id: 'compatible',
-      label: 'Compatible Assets',
-      content: (
-        <div className="space-y-4">
-          <ul className="list-disc pl-4 text-gray-400">
-            <li>Compatible Asset 1</li>
-            <li>Compatible Asset 2</li>
-            <li>Compatible Asset 3</li>
-          </ul>
-        </div>
-      )
+      id: 'overview',
+      label: 'Overview',
+      content: null // Content is handled directly in AppTabs
     },
     {
       id: 'dependencies',
