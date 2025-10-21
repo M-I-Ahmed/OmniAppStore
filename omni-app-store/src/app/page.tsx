@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import QuickFilterPills from "@/components/QuickFilterPills";
 import FeaturedApps from "@/components/FeaturedApps";
+import RecentlyAddedApps from "@/components/RecentlyAdded";
+import RecommendedApps from "@/components/RecommendedApps";
+import EssentialApps from "@/components/EssentialApps";
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,11 +44,7 @@ export default function Home() {
             priority
           />
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <h1 className="text-4xl font-semibold tracking-wide text-shadow-white ">
-          
-          </h1>
-        </div>
+
         <div className="flex items-center gap-6">
           <div className="
             w-12 h-12
@@ -79,7 +78,7 @@ export default function Home() {
 
       <main className="flex-grow flex flex-col items-center justify-center">
         <div className="container px-8 flex flex-col items-center">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-white text-center mt-35">
+          <h1 className="text-6xl md:text-6.5xl font-extrabold text-white text-center mt-35">
             Welcome to the Omni App Store
           </h1>
           <p className="text-xl md:text-2xl text-gray-400 font-light text-center mt-8">
@@ -145,12 +144,18 @@ export default function Home() {
             </button>
 
           <FeaturedApps />
+
+          <RecommendedApps />
+          
+          <EssentialApps />
+
+          <RecentlyAddedApps />
         </div>
       </main>
 
-      <section className="h-screen bg-transparent flex items-center justify-center">
-        <p className="text-4xl text-gray-400">Scroll Down to See Header Change!</p>
-      </section>
+      {/* <section className="h-screen bg-transparent flex items-center justify-center">
+      
+      </section> */}
     </div>
   );
 }
