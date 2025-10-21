@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import QuickFilterPills from "@/components/QuickFilterPills";
 import FeaturedApps from "@/components/FeaturedApps";
+import RecentlyAddedApps from "@/components/RecentlyAdded";
+import RecommendedApps from "@/components/RecommendedApps";
+import EssentialApps from "@/components/EssentialApps";
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -141,12 +144,18 @@ export default function Home() {
             </button>
 
           <FeaturedApps />
+
+          <RecommendedApps />
+          
+          <EssentialApps />
+
+          <RecentlyAddedApps />
         </div>
       </main>
 
-      <section className="h-screen bg-transparent flex items-center justify-center">
+      {/* <section className="h-screen bg-transparent flex items-center justify-center">
       
-      </section>
+      </section> */}
     </div>
   );
 }

@@ -1,23 +1,23 @@
 import AppTile from './AppTile';
 
-const FEATURED_APPS = [
-  { id: '1', name: 'Demo App', icon: '/vercel.svg' },
-  { id: '2', name: 'Quality Inspector AI', icon: '/vercel.svg' },
-  { id: '3', name: 'Maintenance Predictor', icon: '/vercel.svg' },
-  { id: '4', name: 'CNC Optimizer', icon: '/vercel.svg' },
-  { id: '5', name: 'Sensor Dashboard', icon: '/vercel.svg' },
-  { id: '6', name: 'Process Monitor', icon: '/vercel.svg' },
-  { id: '7', name: 'Robot Path Planner', icon: '/vercel.svg' },
+const RECOMMENDED_APPS = [
+  { id: '1', name: 'Demo App 3', icon: '/vercel.svg' },
+  { id: '2', name: 'SmartSeal', icon: '/vercel.svg' },
+  { id: '3', name: 'Predictive Maintenance', icon: '/vercel.svg' },
+  { id: '4', name: 'Work Instruction', icon: '/vercel.svg' },
+  { id: '5', name: 'Manufacturing Analytics', icon: '/vercel.svg' },
+  { id: '6', name: 'Plant Simulation', icon: '/vercel.svg' },
+  { id: '7', name: 'Plant Master', icon: '/vercel.svg' },
 ];
 
-export default function FeaturedApps() {
+export default function RecommendedApps() {
   return (
     <div className="w-full mt-16">
-      <h2 className="text-2xl font-semibold text-white mb-6 px-8">Featured Applications</h2>
+      <h2 className="text-2xl font-semibold text-white mb-6 px-8">Recommended Apps</h2>
       <div className="relative">
         <div className="overflow-x-scroll scroll-hide scrollbar-hide">
           <div className="flex pb-6 px-8" style={{ width: 'max-content' }}>
-            {FEATURED_APPS.map((app) => (
+            {RECOMMENDED_APPS.map((app) => (
               <AppTile key={app.id} id={app.id} name={app.name} icon={app.icon} />
             ))}
           </div>

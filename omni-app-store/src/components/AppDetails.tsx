@@ -82,7 +82,7 @@ export default function AppDetails({ appName }: AppDetailsProps) {
                   <span>Trusted</span>
                 </div>
               </div>
-              <p className="text-gray-400 justify-center items-center flex ">These badges indicate the trust level of the application.</p>
+              <p className="text-gray-400 justify-center items-center flex ">Trust Badges here</p>
             </section>
 
             <div className="mt-4 justify-center flex items-center">
