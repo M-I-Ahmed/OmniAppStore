@@ -18,7 +18,7 @@ export default function DropDownDescription({ title, children }: DropDownProps) 
                    bg-white/5 hover:bg-white/10 backdrop-blur-md
                    rounded-lg transition-all duration-200"
       >
-        <span className="text-xl text-cyan-400 font-medium">{title}</span>
+        <span className="text-xl text-gray-200/80 font-medium">{title}</span>
         <svg
           className={`w-4 h-4 text-cyan-400 transition-transform duration-200 
                     ${isOpen ? 'transform rotate-180' : ''}`}
