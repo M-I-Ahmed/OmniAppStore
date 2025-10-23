@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AppDetails from "@/components/AppDetails";
+import AppDetails from "@/components/AppInfo/AppDetails";
 
 interface PageProps {
   params: {

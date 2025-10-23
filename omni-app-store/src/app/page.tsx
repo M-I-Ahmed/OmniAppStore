@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import QuickFilterPills from "@/components/QuickFilterPills";
-import FeaturedApps from "@/components/FeaturedApps";
-import RecentlyAddedApps from "@/components/RecentlyAdded";
-import RecommendedApps from "@/components/RecommendedApps";
-import EssentialApps from "@/components/EssentialApps";
+import QuickFilterPills from "@/components/HomePage/QuickFilterPills";
+import FeaturedApps from "@/components/HomePage/FeaturedApps";
+import RecentlyAddedApps from "@/components/HomePage/RecentlyAdded";
+import RecommendedApps from "@/components/HomePage/RecommendedApps";
+import EssentialApps from "@/components/HomePage/EssentialApps";
+import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
+import { APP_IDS } from '@/config/appIds';
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -146,10 +148,14 @@ export default function Home() {
           <FeaturedApps />
 
           <RecommendedApps />
-          
+
           <EssentialApps />
 
           <RecentlyAddedApps />
+
+          {APP_IDS[process.env.NODE_ENV === 'production' ? 'production' : 'development'].featuredApps.map((id) => (
+            <AppTileConnected key={id} id={id} />
+          ))}
         </div>
       </main>
 
