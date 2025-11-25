@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import QuickFilterPills from "@/components/HomePage/QuickFilterPills";
 import FeaturedApps from "@/components/HomePage/FeaturedApps";
 import RecentlyAddedApps from "@/components/HomePage/RecentlyAdded";
@@ -11,6 +12,7 @@ import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
 import { APP_IDS } from '@/config/appIds';
 
 export default function Home() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -28,6 +30,10 @@ export default function Home() {
       ? "bg-gray-900/95 backdrop-blur-xl border-gray-700/50 shadow-2xl shadow-gray-950/95"
       : "bg-transparent"}
   `;
+
+  const handleExploreApps = () => {
+    router.push('/AllApps');
+  };
 
   return (
     <div className="flex flex-col min-h-screen text-white relative ">
@@ -131,7 +137,9 @@ export default function Home() {
             <QuickFilterPills />
           </div>
 
-            <button className="
+          <button 
+            onClick={handleExploreApps}
+            className="
               mt-10 px-8 py-3 
               bg-blue-700/60 backdrop-blur-md 
               border border-blue-600/50 
@@ -141,9 +149,10 @@ export default function Home() {
               hover:bg-blue-500/80 
               transition-all duration-300 ease-in-out
               transform hover:scale-[1.03]
-            ">
-              Explore Applications
-            </button>
+            "
+          >
+            Explore Applications
+          </button>
 
           <FeaturedApps />
 
