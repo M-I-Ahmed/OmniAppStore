@@ -6,15 +6,26 @@ import { useRouter } from "next/navigation";
 import AppDetails from "@/components/AppInfo/AppDetails";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function AppDetailsPage({ params }: { params: { id: string } }) {
+export default function AppDetailsPage({ params }: PageProps) {
   const router = useRouter();
-  const appName = decodeURIComponent(params.id);
+  const [appName, setAppName] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
+
+  // Await params and decode the app name
+  useEffect(() => {
+    const getAppName = async () => {
+      const resolvedParams = await params;
+      const decodedName = decodeURIComponent(resolvedParams.id);
+      setAppName(decodedName);
+    };
+
+    getAppName();
+  }, [params]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,10 +42,23 @@ export default function AppDetailsPage({ params }: { params: { id: string } }) {
       ? "bg-gray-900/95 backdrop-blur-xl border-gray-700/50 shadow-2xl shadow-gray-950/95"
       : "bg-transparent"}
   `;
+
+  // Don't render AppDetails until we have the app name
+  if (!appName) {
+    return (
+      <div className="flex flex-col min-h-screen text-white relative">
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-blue-950" />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col min-h-screen text-white relative ">
+    <div className="flex flex-col min-h-screen text-white relative">
       {/* background gradient */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-dark to-blue-950" />
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-blue-950" />
 
       <header className={headerClasses}>
         <div className="flex items-center">
@@ -75,13 +99,12 @@ export default function AppDetailsPage({ params }: { params: { id: string } }) {
           style={{
             background:
               "linear-gradient(to bottom, rgba(31,41,55,0.0) 0%, rgba(31,41,55,0.7) 100%)",
-            // The color above matches bg-gray-900, adjust opacity as needed
           }}
         />
       )}
 
       <main className="flex-grow flex flex-col items-center justify-center">
-      <div className="container px-8">
+        <div className="container px-8">
           {/* Back Navigation */}
           <button
             onClick={() => router.back()}
@@ -96,29 +119,26 @@ export default function AppDetailsPage({ params }: { params: { id: string } }) {
                      transform hover:scale-[1.03]
                      flex items-center gap-2"
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-5 w-5" 
-              viewBox="0 0 20 20" 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
               fill="currentColor"
             >
-              <path 
-                fillRule="evenodd" 
-                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" 
-                clipRule="evenodd" 
+              <path
+                fillRule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clipRule="evenodd"
               />
             </svg>
             Back to Apps
           </button>
 
           <AppDetails appName={appName} />
-
-
-      </div>
+        </div>
       </main>
 
       <section className="h-screen bg-transparent flex items-center justify-center">
-      
       </section>
     </div>
   );
