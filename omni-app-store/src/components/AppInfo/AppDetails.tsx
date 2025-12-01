@@ -39,7 +39,7 @@ export default function AppDetails({ appName }: AppDetailsProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'dependencies' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'dependencies' | 'reviews' | 'pricing' | 'similar apps'>('overview');
   const [expandedSections, setExpandedSections] = useState({
     features: false,
     recommendedAssets: false,
@@ -191,6 +191,26 @@ export default function AppDetails({ appName }: AppDetailsProps) {
             >
               Reviews
             </button>
+            <button
+              onClick={() => setActiveTab('similar apps')}
+              className={`pb-3 px-1 ${
+                activeTab === 'similar apps'
+                  ? 'text-cyan-400 border-b-2 border-cyan-400'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Similar Apps
+            </button>
+            <button
+              onClick={() => setActiveTab('pricing')}
+              className={`pb-3 px-1 ${
+                activeTab === 'pricing'
+                  ? 'text-cyan-400 border-b-2 border-cyan-400'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Pricing
+            </button>
           </div>
 
           {/* Tab Content */}
@@ -338,6 +358,26 @@ export default function AppDetails({ appName }: AppDetailsProps) {
               </div>
             </div>
           )}
+
+          {activeTab === 'similar apps' && (
+            <div>
+              <h2 className="text-2xl font-semibold text-cyan-400 mb-4">Similar Apps</h2>
+              <div className="space-y-3">
+                {/* Similar apps would be listed here */}
+                <h2>  Example similar apps would be listed here</h2>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'pricing' && (
+            <div>
+              <h2 className="text-2xl font-semibold text-cyan-400 mb-4">Pricing</h2>
+              <div className="space-y-3">
+                {/* Pricing details would be listed here */}
+                <h2>  Example pricing details would be listed here</h2>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -350,7 +390,7 @@ export default function AppDetails({ appName }: AppDetailsProps) {
                              rounded-xl text-white font-semibold
                              transition-all duration-200 shadow-lg
                              shadow-blue-500/25">
-              Install Application
+              Get Application
             </button>
 
             {/* Section for developer info */}
@@ -365,6 +405,16 @@ export default function AppDetails({ appName }: AppDetailsProps) {
               <span className=" flex flex-col px-4 py-1 bg-purple-500/20 text-purple-400 text-sm rounded-full max-w-25 text-center shadow-lg shadow-purple-500/15 border-purple-400/40 border-2">
                 ISO Certified
               </span>
+            </div>
+            <div className="flex flex-row justify-center items-center gap-1 mt-3">
+              <h2 className="text-gray-400 text-m text-left w-45">Have a query?</h2>
+              <button className="w-50 px-2 py-3 bg-blue-600/20 hover:bg-blue-700 
+                             rounded-3xl text-sm
+                             transition-all duration-200 shadow-lg
+                             shadow-blue-500/25 border-blue-400/60 border-2
+                             text-white/70">
+                Get Support
+              </button>
             </div>
           </div>
 
