@@ -10,10 +10,13 @@ import RecommendedApps from "@/components/HomePage/RecommendedApps";
 import EssentialApps from "@/components/HomePage/EssentialApps";
 import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
 import { APP_IDS } from '@/config/appIds';
+import LoginFlow from "@/components/LoginFlow";
 
 export default function Home() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Add this state
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,6 +57,26 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-6">
+          <button
+            onClick={() => setIsLoginModalOpen(true)}
+            className="
+              px-4 py-2
+              bg-gray-700/50 
+              rounded-xl 
+              flex items-center justify-center 
+              hover:bg-blue-600/70 
+              transition-all duration-300 ease-in-out 
+              cursor-pointer 
+              shadow-lg 
+              hover:shadow-blue-500/50
+              hover:scale-105
+              text-white font-medium text-sm
+            "
+          >
+            Login
+          </button>
+        </div>
+        {/* <div className="flex items-center gap-6">
           <div className="
             w-12 h-12
             bg-gray-700/50 
@@ -69,9 +92,15 @@ export default function Home() {
             <span className="text-white font-bold text-lg">
               N
             </span>
-          </div>
-        </div>
+          </div> */}
       </header>
+
+      {/* Login Modal */}
+      <LoginFlow 
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
+
 
       {scrolled && (
         <div
@@ -162,9 +191,6 @@ export default function Home() {
 
           <RecentlyAddedApps />
 
-          {APP_IDS[process.env.NODE_ENV === 'production' ? 'production' : 'development'].featuredApps.map((id) => (
-            <AppTileConnected key={id} id={id} />
-          ))}
         </div>
       </main>
 
