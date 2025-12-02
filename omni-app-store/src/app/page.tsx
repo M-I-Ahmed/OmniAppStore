@@ -11,6 +11,7 @@ import EssentialApps from "@/components/HomePage/EssentialApps";
 import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
 import { APP_IDS } from '@/config/appIds';
 import LoginFlow from "@/components/LoginFlow";
+import { testFirebaseConnection } from '@/lib/test-firebase';
 
 export default function Home() {
   const router = useRouter();
@@ -24,6 +25,10 @@ export default function Home() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    testFirebaseConnection();
   }, []);
 
   const headerClasses = `
