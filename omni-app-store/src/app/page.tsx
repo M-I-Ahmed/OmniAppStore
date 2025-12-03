@@ -11,6 +11,7 @@ import EssentialApps from "@/components/HomePage/EssentialApps";
 import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
 import { APP_IDS } from '@/config/appIds';
 import LoginFlow from "@/components/LoginFlow";
+import { testFirebaseConnection } from '@/lib/test-firebase';
 
 export default function Home() {
   const router = useRouter();
@@ -24,6 +25,10 @@ export default function Home() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    testFirebaseConnection();
   }, []);
 
   const headerClasses = `
@@ -43,7 +48,7 @@ export default function Home() {
       {/* background gradient */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-dark to-blue-950" />
 
-      <header className={headerClasses}>
+      {/* <header className={headerClasses}>
         <div className="flex items-center">
           <Image
             src="/Omnifactory_logo.png"
@@ -93,7 +98,7 @@ export default function Home() {
               N
             </span>
           </div> */}
-      </header>
+      {/* </header> */}
 
       {/* Login Modal */}
       <LoginFlow 

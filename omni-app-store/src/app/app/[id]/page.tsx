@@ -60,38 +60,7 @@ export default function AppDetailsPage({ params }: PageProps) {
       {/* background gradient */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-blue-950" />
 
-      <header className={headerClasses}>
-        <div className="flex items-center">
-          <Image
-            src="/Omnifactory_logo.png"
-            alt="OMNI Logo"
-            width={200}
-            height={50}
-            className="object-contain h-24 w-[250px] ml-24"
-            style={{ marginLeft: "12px" }}
-            priority
-          />
-        </div>
 
-        <div className="flex items-center gap-6">
-          <div className="
-            w-12 h-12
-            bg-gray-700/50 
-            rounded-xl 
-            flex items-center justify-center 
-            hover:bg-blue-600/70 
-            transition-all duration-300 ease-in-out 
-            cursor-pointer 
-            shadow-lg 
-            hover:shadow-blue-500/50
-            hover:scale-105
-          ">
-            <span className="text-white font-bold text-lg">
-              N
-            </span>
-          </div>
-        </div>
-      </header>
 
       {scrolled && (
         <div
