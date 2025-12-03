@@ -117,36 +117,13 @@ export default function AllAppsPage() {
     return price >= min && price <= max;
   };
 
-  const headerClasses = `
-    relative flex items-center justify-between mb-2 p-6 sticky top-0 z-50 h-20
-    transition-all duration-300 ease-in-out
-    ${scrolled ? "bg-gray-900/95 backdrop-blur-xl border-gray-700/50 shadow-2xl shadow-gray-950/95" : "bg-transparent"}
-  `;
+
 
   return (
-    <div className="flex flex-col min-h-screen text-white relative bg-gradient-to-br from-gray-900 via-black to-dark to-blue-950">
+    <div className="flex flex-col min-h-screen text-white relative">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-dark to-blue-950" />
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-blue-950" />
 
-      <header className={headerClasses}>
-        <div className="flex items-center">
-          <Image
-            src="/Omnifactory_logo.png"
-            alt="OMNI Logo"
-            width={200}
-            height={50}
-            className="object-contain h-24 w-[250px] ml-24"
-            style={{ marginLeft: "12px" }}
-            priority
-          />
-        </div>
-
-        <div className="flex items-center gap-6">
-          <div className="w-12 h-12 bg-gray-700/50 rounded-xl flex items-center justify-center hover:bg-blue-600/70 transition-all duration-300 ease-in-out cursor-pointer shadow-lg hover:shadow-blue-500/50 hover:scale-105">
-            <span className="text-white font-bold text-lg">N</span>
-          </div>
-        </div>
-      </header>
 
       <main className="flex-grow">
         {/* Header Section */}

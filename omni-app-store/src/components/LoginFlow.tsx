@@ -134,7 +134,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       />
       
       {/* Modal Content */}
-      <div className="relative bg-gray-900/95 backdrop-blur-md rounded-3xl w-full max-w-5xl h-[700px] 
+      <div className="relative bg-gray-900/95 backdrop-blur-md rounded-3xl w-full max-w-5xl h-[750px] 
                       shadow-2xl shadow-blue-500/25 border border-white/10 overflow-hidden">
         
         {/* Close Button */}

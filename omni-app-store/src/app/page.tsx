@@ -48,7 +48,7 @@ export default function Home() {
       {/* background gradient */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-dark to-blue-950" />
 
-      <header className={headerClasses}>
+      {/* <header className={headerClasses}>
         <div className="flex items-center">
           <Image
             src="/Omnifactory_logo.png"
@@ -98,7 +98,7 @@ export default function Home() {
               N
             </span>
           </div> */}
-      </header>
+      {/* </header> */}
 
       {/* Login Modal */}
       <LoginFlow 
