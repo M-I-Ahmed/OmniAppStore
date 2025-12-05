@@ -17,8 +17,7 @@ type Step = 'upload' | 'select' | 'manual';
 export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAssetModalProps) {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>('select');
-  const [availableAssets, setAvailableAssets] = useState<Asset[]>([]);
-  const [userAssetIds, setUserAssetIds] = useState<string[]>([]);
+  const [allAssets, setAllAssets] = useState<Asset[]>([]);
   const [selectedAssetId, setSelectedAssetId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,36 +25,30 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
 
   useEffect(() => {
     if (isOpen && user) {
-      fetchAvailableAssets();
+      fetchAssets();
     }
   }, [isOpen, user]);
 
-  const fetchAvailableAssets = async () => {
+  const fetchAssets = async () => {
     try {
       setIsLoading(true);
       
-      // Fetch all assets from Assets collection
+      // Fetch ALL assets from Assets collection
       const assetsRef = collection(db, 'Assets');
       const assetsSnapshot = await getDocs(assetsRef);
-      const allAssets = assetsSnapshot.docs.map(doc => ({
+      const assets = assetsSnapshot.docs.map(doc => ({
         asset_id: doc.id,
         ...doc.data()
       })) as Asset[];
 
-      // Fetch user's current assets
-      const userRef = doc(db, 'User_Profiles', user!.uid);
-      const userDoc = await getDocs(collection(db, 'User_Profiles'));
-      const userData = userDoc.docs.find(d => d.id === user!.uid)?.data();
-      const currentAssetIds = userData?.myAssets || [];
+      console.log('All assets fetched:', assets.length);
+      if (assets.length > 0) {
+        console.log('Sample asset:', assets[0]);
+        console.log('Sample image URL:', assets[0].core_identity?.image_url);
+      }
 
-      setUserAssetIds(currentAssetIds);
+      setAllAssets(assets);
       
-      // Filter out assets already owned by user
-      const unownedAssets = allAssets.filter(
-        asset => !currentAssetIds.includes(asset.asset_id)
-      );
-      
-      setAvailableAssets(unownedAssets);
     } catch (error) {
       console.error('Error fetching assets:', error);
     } finally {
@@ -75,6 +68,8 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
         myAssets: arrayUnion(selectedAssetId)
       });
 
+      console.log('Asset added successfully:', selectedAssetId);
+
       // Success callback
       if (onAssetAdded) {
         onAssetAdded();
@@ -82,6 +77,7 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
 
       // Reset and close
       setSelectedAssetId('');
+      setSearchQuery('');
       onClose();
     } catch (error) {
       console.error('Error adding asset:', error);
@@ -94,27 +90,33 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    // TODO: Implement AI-powered file upload
     setCurrentStep('manual');
   };
 
-  const filteredAssets = availableAssets.filter(asset =>
-    asset.core_identity.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.core_identity.manufacturer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    asset.core_identity.model_number.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAssets = allAssets.filter(asset => {
+    const query = searchQuery.toLowerCase();
+    const displayName = asset.core_identity?.display_name?.toLowerCase() || '';
+    const manufacturer = asset.core_identity?.manufacturer?.toLowerCase() || '';
+    const modelNumber = asset.core_identity?.model_number?.toLowerCase() || '';
+    const category = asset.core_identity?.asset_category?.toLowerCase() || '';
+    
+    return displayName.includes(query) || 
+           manufacturer.includes(query) || 
+           modelNumber.includes(query) ||
+           category.includes(query);
+  });
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-slate-800 border border-slate-700 rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div>
             <h2 className="text-2xl font-bold text-slate-100">Add Asset to Your Shop Floor</h2>
             <p className="text-slate-400 text-sm mt-1">
-              Link existing equipment or create a new digital twin
+              Browse the global asset repository and link equipment to your profile
             </p>
           </div>
           <button
@@ -199,62 +201,93 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
               <div className="mb-6">
                 <input
                   type="text"
-                  placeholder="Search by name, manufacturer, or model..."
+                  placeholder="Search by name, manufacturer, model, or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <p className="text-xs text-slate-500 mt-2">
+                  Showing {filteredAssets.length} of {allAssets.length} total assets in repository
+                </p>
               </div>
 
-              {/* Asset List */}
+              {/* Asset Grid */}
               {isLoading ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                  <p className="text-slate-400">Loading available assets...</p>
+                  <p className="text-slate-400">Loading asset repository...</p>
+                </div>
+              ) : allAssets.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-5xl mb-4">📦</div>
+                  <h3 className="text-lg font-semibold text-slate-200 mb-2">No assets in repository</h3>
+                  <p className="text-slate-400">The global asset repository is empty</p>
                 </div>
               ) : filteredAssets.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="text-5xl mb-4">🏭</div>
-                  <p className="text-slate-400">No available assets found in the system</p>
+                  <div className="text-5xl mb-4">🔍</div>
+                  <h3 className="text-lg font-semibold text-slate-200 mb-2">No matches found</h3>
+                  <p className="text-slate-400">Try a different search term</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto pr-2">
                   {filteredAssets.map((asset) => (
                     <button
                       key={asset.asset_id}
                       onClick={() => setSelectedAssetId(asset.asset_id)}
-                      className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                      className={`p-3 rounded-lg border-2 transition-all text-left ${
                         selectedAssetId === asset.asset_id
                           ? 'border-blue-500 bg-blue-500/10'
                           : 'border-slate-700 hover:border-slate-600 bg-slate-700/50'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-slate-600 rounded-md overflow-hidden flex-shrink-0">
-                          {asset.core_identity.image_url && (
-                            <img
-                              src={asset.core_identity.image_url}
-                              alt={asset.core_identity.display_name}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
+                      {/* Image Container - Smaller */}
+                      <div className="w-full aspect-square bg-slate-600 rounded-md overflow-hidden mb-2 relative">
+                        {asset.core_identity?.image_url ? (
+                          <img
+                            src={asset.core_identity.image_url}
+                            alt={asset.core_identity.display_name || 'Asset'}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.error('Image failed to load:', asset.core_identity.image_url);
+                              console.error('Asset ID:', asset.asset_id);
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        {/* Fallback icon */}
+                        <div 
+                          className="absolute inset-0 flex items-center justify-center text-slate-400 text-3xl"
+                          style={{ display: asset.core_identity?.image_url ? 'none' : 'flex' }}
+                        >
+                          🏭
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-slate-100 truncate">
-                            {asset.core_identity.display_name}
-                          </h4>
-                          <p className="text-sm text-slate-400">
-                            {asset.core_identity.manufacturer} {asset.core_identity.model_number}
-                          </p>
-                          <p className="text-xs text-slate-500 mt-1">
-                            {asset.core_identity.asset_category} • {asset.operational_status.location_area}
-                          </p>
-                        </div>
+                        
+                        {/* Selected Indicator - Smaller */}
                         {selectedAssetId === asset.asset_id && (
-                          <svg className="w-6 h-6 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
+                          <div className="absolute top-1 right-1">
+                            <svg className="w-5 h-5 text-blue-500 bg-white rounded-full" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </div>
                         )}
+                      </div>
+
+                      {/* Asset Details - Compact */}
+                      <div>
+                        <h4 className="font-semibold text-slate-100 text-sm mb-0.5 line-clamp-1">
+                          {asset.core_identity?.display_name || 'Unnamed Asset'}
+                        </h4>
+                        <p className="text-xs text-slate-400 mb-1.5 line-clamp-1">
+                          {asset.core_identity?.manufacturer || 'Unknown'}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          <span className="text-xs px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded">
+                            {asset.core_identity?.asset_category || 'N/A'}
+                          </span>
+                        </div>
                       </div>
                     </button>
                   ))}
