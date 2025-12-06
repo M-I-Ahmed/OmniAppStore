@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase';
 import { Asset } from '@/types/asset';
 import AssetCard from '@/components/ProfilePage/AssetCard';
 import AddAssetModal from '@/components/ProfilePage/AddAssetModal';
+import { logUserEvent } from '@/lib/eventLogger';
 
 type FilterType = 'all' | 'manipulator' | 'end_effector' | 'cnc' | 'plc_controller' | 'available';
 
@@ -124,6 +125,10 @@ export default function AssetRepositoryPage() {
   const handleRemoveAsset = async (assetId: string) => {
     if (!user) return;
 
+    // Get asset details before removing
+    const assetToRemove = assets.find(a => a.asset_id === assetId);
+    const assetName = assetToRemove?.core_identity?.display_name || 'Unknown Asset';
+
     // Confirmation dialog
     const confirmed = window.confirm(
       'Are you sure you want to remove this asset from your shop floor? You can add it back later if needed.'
@@ -137,6 +142,14 @@ export default function AssetRepositoryPage() {
       await updateDoc(userRef, {
         myAssets: arrayRemove(assetId)
       });
+
+      // Log the event
+      await logUserEvent(
+        user.uid,
+        'asset_removed',
+        `Removed asset: ${assetName}`,
+        `Asset ID: ${assetId}`
+      );
 
       // Update local state to remove asset from UI
       setAssets(prev => prev.filter(asset => asset.asset_id !== assetId));

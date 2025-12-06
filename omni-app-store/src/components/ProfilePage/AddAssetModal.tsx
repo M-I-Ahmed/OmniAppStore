@@ -5,6 +5,7 @@ import { collection, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firest
 import { db } from '@/lib/firebase';
 import { Asset } from '@/types/asset';
 import { useAuth } from '@/contexts/AuthContext';
+import { logUserEvent } from '@/lib/eventLogger';
 
 interface AddAssetModalProps {
   isOpen: boolean;
@@ -62,11 +63,23 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
     try {
       setIsLoading(true);
       
+      // Find the asset details for logging
+      const selectedAsset = allAssets.find(a => a.asset_id === selectedAssetId);
+      const assetName = selectedAsset?.core_identity?.display_name || 'Unknown Asset';
+      
       // Update user's myAssets array in Firestore
       const userRef = doc(db, 'User_Profiles', user.uid);
       await updateDoc(userRef, {
         myAssets: arrayUnion(selectedAssetId)
       });
+
+      // Log the event
+      await logUserEvent(
+        user.uid,
+        'asset_added',
+        `Added asset: ${assetName}`,
+        `Asset ID: ${selectedAssetId}`
+      );
 
       console.log('Asset added successfully:', selectedAssetId);
 

@@ -4,6 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Asset } from '@/types/asset';
+import AssetCardMini from '@/components/ProfilePage/AssetCardMini';
+import { UserEvent, getEventColor, formatEventTime } from '@/lib/eventLogger';
 
 interface ProfilePageProps {
   params: {
@@ -16,6 +21,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const { user, userProfile, loading } = useAuth();
   const { showToast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [loadingAssets, setLoadingAssets] = useState(true);
+  const [events, setEvents] = useState<UserEvent[]>([]);
 
   useEffect(() => {
     // Redirect if not logged in or accessing wrong profile
@@ -24,6 +32,81 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       router.push('/');
     }
   }, [user, params.id, loading, router, showToast]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserAssets();
+      fetchUserEvents();
+    }
+  }, [user]);
+
+  const fetchUserEvents = async () => {
+    if (!user) return;
+
+    try {
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      const userDocSnap = await getDoc(userRef);
+      
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        const eventLog = userData?.eventLog || [];
+        
+        // Sort events by timestamp (newest first) and take last 5
+        const sortedEvents = eventLog
+          .sort((a: UserEvent, b: UserEvent) => b.timestamp.seconds - a.timestamp.seconds)
+          .slice(0, 5);
+        
+        setEvents(sortedEvents);
+      }
+    } catch (error) {
+      console.error('Error fetching user events:', error);
+    }
+  };
+
+  const fetchUserAssets = async () => {
+    if (!user) return;
+
+    try {
+      setLoadingAssets(true);
+
+      // Get user's asset IDs from their profile
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      const userDocSnap = await getDoc(userRef);
+      
+      if (!userDocSnap.exists()) {
+        setAssets([]);
+        setLoadingAssets(false);
+        return;
+      }
+
+      const userProfileData = userDocSnap.data();
+      const userAssetIds = userProfileData?.myAssets || [];
+
+      if (userAssetIds.length === 0) {
+        setAssets([]);
+        setLoadingAssets(false);
+        return;
+      }
+
+      // Fetch all assets from the Assets collection
+      const assetsRef = collection(db, 'Assets');
+      const assetsSnapshot = await getDocs(assetsRef);
+      
+      // Filter to only include user's assets
+      const userAssets = assetsSnapshot.docs
+        .filter(doc => userAssetIds.includes(doc.id))
+        .map(doc => ({
+          asset_id: doc.id,
+          ...doc.data()
+        })) as Asset[];
+
+      setAssets(userAssets);
+    } catch (error) {
+      console.error('Error fetching user assets:', error);
+    } finally {
+      setLoadingAssets(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,8 +173,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                 <span className="text-white font-medium">{userProfile.username}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-700/30">
-                <span className="text-gray-300">Apps Owned</span>
-                <span className="text-blue-400 font-medium">{userProfile.myAssets?.length || 0}</span>
+                <span className="text-gray-300">My Assets</span>
+                <span className="text-blue-400 font-medium">{assets.length}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-700/30">
                 <span className="text-gray-300">Member Since</span>
@@ -112,29 +195,25 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               
               <div className="flex-grow overflow-y-auto">
                 <div className="space-y-3">
-                  {/* Recent Events */}
-                  <div className="flex items-start p-3 bg-gray-700/30 rounded-lg">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    <div className="flex-grow min-w-0">
-                      <p className="text-white text-sm">Profile created</p>
-                      <p className="text-gray-400 text-xs">Welcome to Omni App Store!</p>
-                      <p className="text-gray-500 text-xs mt-1">Today</p>
+                  {events.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-gray-400 text-sm">No recent activity</p>
+                      <p className="text-gray-500 text-xs mt-2">Events will appear here as you use the platform</p>
                     </div>
-                  </div>
-
-                  <div className="flex items-start p-3 bg-gray-700/30 rounded-lg">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    <div className="flex-grow min-w-0">
-                      <p className="text-white text-sm">Account verified</p>
-                      <p className="text-gray-400 text-xs">Email confirmation received</p>
-                      <p className="text-gray-500 text-xs mt-1">Today</p>
-                    </div>
-                  </div>
-
-                  {/* Placeholder for more events */}
-                  <div className="text-center py-4">
-                    <p className="text-gray-500 text-xs">More events will appear here as you use the platform</p>
-                  </div>
+                  ) : (
+                    events.map((event, index) => (
+                      <div key={index} className="flex items-start p-3 bg-gray-700/30 rounded-lg">
+                        <div className={`w-2 h-2 ${getEventColor(event.type)} rounded-full mt-2 mr-3 flex-shrink-0`}></div>
+                        <div className="flex-grow min-w-0">
+                          <p className="text-white text-sm">{event.description}</p>
+                          {event.details && (
+                            <p className="text-gray-400 text-xs">{event.details}</p>
+                          )}
+                          <p className="text-gray-500 text-xs mt-1">{formatEventTime(event.timestamp)}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -280,24 +359,51 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">My Assets</h3>
               <button
-              onClick={handleManageAssets}
-              className="text-blue-400 hover:text-blue-300 text-sm"
+                onClick={handleManageAssets}
+                className="text-blue-400 hover:text-blue-300 text-sm"
               >
                 Manage Assets
               </button>
             </div>
-            <div className="flex-grow flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
+            <div className="flex-grow">
+              {loadingAssets ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <p className="text-gray-400 mb-3">No assets registered</p>
-                <button className="px-4 py-2 bg-green-600/80 hover:bg-green-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-green-500/50 text-sm">
-                  Add Asset
-                </button>
-              </div>
+              ) : assets.length === 0 ? (
+                <div className="flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-400 mb-3">No assets registered</p>
+                    <button 
+                      onClick={handleManageAssets}
+                      className="px-4 py-2 bg-green-600/80 hover:bg-green-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-green-500/50 text-sm"
+                    >
+                      Add Asset
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {assets.slice(0, 3).map((asset) => (
+                      <AssetCardMini key={asset.asset_id} asset={asset} />
+                    ))}
+                  </div>
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={handleManageAssets}
+                      className="px-4 py-2 bg-green-600/80 hover:bg-green-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-green-500/50 text-sm"
+                    >
+                      View All Assets
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
