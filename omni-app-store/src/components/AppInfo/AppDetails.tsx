@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
+import { useAuth } from "@/contexts/AuthContext";
+import { logUserEvent } from "@/lib/eventLogger";
+import { useRouter } from "next/navigation";
 
 interface AppDetailsProps {
   appName: string;
@@ -35,6 +38,8 @@ interface Review {
 }
 
 export default function AppDetails({ appName }: AppDetailsProps) {
+  const { user } = useAuth();
+  const router = useRouter();
   const [appData, setAppData] = useState<AppData | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,6 +50,8 @@ export default function AppDetails({ appName }: AppDetailsProps) {
     recommendedAssets: false,
     compatibleAssets: false
   });
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const fetchAppData = async () => {
@@ -68,6 +75,17 @@ export default function AppDetails({ appName }: AppDetailsProps) {
 
         if (foundApp && appDocId) {
           setAppData(foundApp);
+
+          // Check if user has this app connected
+          if (user) {
+            const userRef = doc(db, 'User_Profiles', user.uid);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              const myApps = userData?.myApps || [];
+              setIsConnected(myApps.includes(appDocId));
+            }
+          }
 
           // Fetch reviews for this app
           try {
@@ -98,13 +116,68 @@ export default function AppDetails({ appName }: AppDetailsProps) {
     if (appName) {
       fetchAppData();
     }
-  }, [appName]);
+  }, [appName, user]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  const handleConnectApp = async () => {
+    if (!user) {
+      alert('Please log in to connect apps');
+      return;
+    }
+
+    if (isConnected) {
+      router.push('/my-apps');
+      return;
+    }
+
+    try {
+      setIsConnecting(true);
+
+      // Find the app ID
+      const appsRef = collection(db, 'Apps');
+      const querySnapshot = await getDocs(appsRef);
+      
+      let appDocId = null;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.AppName === appName || data.AppName?.trim() === appName.trim()) {
+          appDocId = doc.id;
+        }
+      });
+
+      if (!appDocId) {
+        alert('App not found');
+        return;
+      }
+
+      // Add app to user's myApps array
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      await updateDoc(userRef, {
+        myApps: arrayUnion(appDocId)
+      });
+
+      // Log the event
+      await logUserEvent(
+        user.uid,
+        'app_connected',
+        `Connected app: ${appName}`,
+        `App ID: ${appDocId}`
+      );
+
+      setIsConnected(true);
+      alert(`Successfully connected ${appName}!`);
+    } catch (error) {
+      console.error('Error connecting app:', error);
+      alert('Failed to connect app. Please try again.');
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   const renderStars = (rating: number) => {
@@ -386,11 +459,18 @@ export default function AppDetails({ appName }: AppDetailsProps) {
         <div className="sticky top-32 space-y-6">
           {/* App Preview */}
           <div className="bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 shadow-lg shadow-blue-500/25">
-            <button className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 
-                             rounded-xl text-white font-semibold
-                             transition-all duration-200 shadow-lg
-                             shadow-blue-500/25">
-              Get Application
+            <button 
+              onClick={handleConnectApp}
+              disabled={isConnecting}
+              className={`w-full px-6 py-3 rounded-xl font-semibold
+                         transition-all duration-200 shadow-lg
+                         ${
+                           isConnected
+                             ? 'bg-green-600 hover:bg-green-700 shadow-green-500/25'
+                             : 'bg-blue-600 hover:bg-blue-700 shadow-blue-500/25'
+                         } text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {isConnecting ? 'Connecting...' : isConnected ? 'Go to My Apps' : 'Get Application'}
             </button>
 
             {/* Section for developer info */}

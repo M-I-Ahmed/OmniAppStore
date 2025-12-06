@@ -8,6 +8,7 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Asset } from '@/types/asset';
 import AssetCardMini from '@/components/ProfilePage/AssetCardMini';
+import AppCardMini from '@/components/ProfilePage/AppCardMini';
 import { UserEvent, getEventColor, formatEventTime } from '@/lib/eventLogger';
 
 interface ProfilePageProps {
@@ -24,6 +25,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(true);
   const [events, setEvents] = useState<UserEvent[]>([]);
+  const [apps, setApps] = useState<any[]>([]);
+  const [loadingApps, setLoadingApps] = useState(true);
 
   useEffect(() => {
     // Redirect if not logged in or accessing wrong profile
@@ -37,6 +40,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     if (user) {
       fetchUserAssets();
       fetchUserEvents();
+      fetchUserApps();
     }
   }, [user]);
 
@@ -60,6 +64,51 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       }
     } catch (error) {
       console.error('Error fetching user events:', error);
+    }
+  };
+
+  const fetchUserApps = async () => {
+    if (!user) return;
+
+    try {
+      setLoadingApps(true);
+
+      // Get user's app IDs from their profile
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      const userDocSnap = await getDoc(userRef);
+      
+      if (!userDocSnap.exists()) {
+        setApps([]);
+        setLoadingApps(false);
+        return;
+      }
+
+      const userProfileData = userDocSnap.data();
+      const userAppIds = userProfileData?.myApps || [];
+
+      if (userAppIds.length === 0) {
+        setApps([]);
+        setLoadingApps(false);
+        return;
+      }
+
+      // Fetch all apps from the Apps collection
+      const appsRef = collection(db, 'Apps');
+      const appsSnapshot = await getDocs(appsRef);
+      
+      // Filter to only include user's apps
+      const userApps = appsSnapshot.docs
+        .filter(doc => userAppIds.includes(doc.id))
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+      setApps(userApps);
+    } catch (error) {
+      console.error('Error fetching user apps:', error);
+    } finally {
+      setLoadingApps(false);
     }
   };
 
@@ -171,6 +220,10 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               <div className="flex justify-between items-center py-2 border-b border-gray-700/30">
                 <span className="text-gray-300">Username</span>
                 <span className="text-white font-medium">{userProfile.username}</span>
+              </div>
+              <div className="flex justify-between items-center py-2 border-b border-gray-700/30">
+                <span className="text-gray-300">Apps Owned</span>
+                <span className="text-blue-400 font-medium">{apps.length}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-gray-700/30">
                 <span className="text-gray-300">My Assets</span>
@@ -329,28 +382,56 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700/50 p-6 shadow-xl flex-1">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-white">My Apps</h3>
-              <button 
-                onClick={() => router.push('/AllApps')}
+              <button
+                onClick={() => router.push('/my-apps')}
                 className="text-blue-400 hover:text-blue-300 text-sm"
               >
-                View All
+                Manage Apps
               </button>
             </div>
-            <div className="flex-grow flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                </svg>
+            <div className="flex-grow">
+              {loadingApps ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-                <p className="text-gray-400 mb-3">No apps in your collection yet</p>
-                <button 
-                  onClick={() => router.push('/AllApps')}
-                  className="px-4 py-2 bg-blue-600/80 hover:bg-blue-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-blue-500/50 text-sm"
-                >
-                  Browse Apps
-                </button>
-              </div>
+              ) : apps.length === 0 ? (
+                <div className="flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-400 mb-3">No apps connected yet</p>
+                    <button 
+                      onClick={() => router.push('/AllApps')}
+                      className="px-4 py-2 bg-blue-600/80 hover:bg-blue-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-blue-500/50 text-sm"
+                    >
+                      Browse Apps
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {apps.slice(0, 3).map((app) => (
+                      <AppCardMini 
+                        key={app.id} 
+                        app={app}
+                        onClick={() => router.push(`/app/${encodeURIComponent(app.AppName)}`)}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={() => router.push('/my-apps')}
+                      className="px-4 py-2 bg-blue-600/80 hover:bg-blue-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-blue-500/50 text-sm"
+                    >
+                      View All Apps
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
