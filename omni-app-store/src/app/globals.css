@@ -36,6 +36,25 @@ body {
   background: linear-gradient(180deg, #0891b2, #2563eb);
 }
 
+/* Slim gray scrollbar for modals */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-track-slate-800::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 16px 0;
+}
+
+.scrollbar-thumb-slate-600::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.scrollbar-thumb-slate-600::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
 /* Premium glassmorphism utilities */
 @layer utilities {
   .glass-premium {

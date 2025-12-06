@@ -3,7 +3,7 @@ export interface CoreIdentity {
   manufacturer: string;
   model_number: string;
   serial_number: string;
-  asset_category: 'manipulator' | 'end_effector' | 'cnc';
+  asset_category: 'manipulator' | 'end_effector' | 'cnc' | 'plc_controller';
   image_url: string;
 }
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, getDocs, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, getDoc, arrayRemove } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Asset } from '@/types/asset';
 import AssetCard from '@/components/ProfilePage/AssetCard';
@@ -120,6 +120,34 @@ export default function AssetRepositoryPage() {
     }
   };
 
+  // NEW: Handle remove asset
+  const handleRemoveAsset = async (assetId: string) => {
+    if (!user) return;
+
+    // Confirmation dialog
+    const confirmed = window.confirm(
+      'Are you sure you want to remove this asset from your shop floor? You can add it back later if needed.'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      // Remove asset ID from user's myAssets array
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      await updateDoc(userRef, {
+        myAssets: arrayRemove(assetId)
+      });
+
+      // Update local state to remove asset from UI
+      setAssets(prev => prev.filter(asset => asset.asset_id !== assetId));
+
+      console.log('Asset removed successfully:', assetId);
+    } catch (error) {
+      console.error('Error removing asset:', error);
+      alert('Failed to remove asset. Please try again.');
+    }
+  };
+
   const filters: { key: FilterType; label: string; icon: string }[] = [
     { key: 'all', label: 'All Assets', icon: '🏭' },
     { key: 'manipulator', label: 'Robots', icon: '🦾' },
@@ -232,12 +260,13 @@ export default function AssetRepositoryPage() {
                 Showing {filteredAssets.length} of {assets.length} assets
               </p>
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredAssets.map((asset) => (
                 <AssetCard
                   key={asset.asset_id}
                   asset={asset}
                   onToggleAvailability={handleToggleAvailability}
+                  onRemove={() => handleRemoveAsset(asset.asset_id)}
                 />
               ))}
             </div>
