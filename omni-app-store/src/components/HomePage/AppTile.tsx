@@ -12,6 +12,7 @@ export default function AppTile({ id, name, icon }: AppTileProps) {
   const router = useRouter();
 
   const handleNavigate = () => {
+    // Use name for navigation as that's what the app details page expects
     router.push(`/app/${encodeURIComponent(name)}`);
   };
 
@@ -24,7 +25,7 @@ export default function AppTile({ id, name, icon }: AppTileProps) {
                       flex items-center justify-center">
         <img src={icon} alt={name} className="w-16 h-16" />
       </div>
-      <h3 className="text-xl font-semibold text-white mb-4">{name}</h3>
+      <h3 className="text-xl font-semibold text-white mb-4 justify-center text-center">{name}</h3>
       <div className="mt-4">
         <button
           onClick={handleNavigate}

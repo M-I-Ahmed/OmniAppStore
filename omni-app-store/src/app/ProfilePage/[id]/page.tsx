@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
@@ -10,31 +10,34 @@ import { Asset } from '@/types/asset';
 import AssetCardMini from '@/components/ProfilePage/AssetCardMini';
 import AppCardMini from '@/components/ProfilePage/AppCardMini';
 import { UserEvent, getEventColor, formatEventTime } from '@/lib/eventLogger';
+import BecomeDeveloperModal from '@/components/developer/BecomeDeveloperModal';
 
 interface ProfilePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const router = useRouter();
   const { user, userProfile, loading } = useAuth();
   const { showToast } = useToast();
+  const { id } = use(params);
   const [isEditing, setIsEditing] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loadingAssets, setLoadingAssets] = useState(true);
   const [events, setEvents] = useState<UserEvent[]>([]);
   const [apps, setApps] = useState<any[]>([]);
   const [loadingApps, setLoadingApps] = useState(true);
+  const [showDeveloperModal, setShowDeveloperModal] = useState(false);
 
   useEffect(() => {
     // Redirect if not logged in or accessing wrong profile
-    if (!loading && (!user || user.uid !== params.id)) {
+    if (!loading && (!user || user.uid !== id)) {
       showToast("Access denied. Redirecting to home.", "error");
       router.push('/');
     }
-  }, [user, params.id, loading, router, showToast]);
+  }, [user, id, loading, router, showToast]);
 
   useEffect(() => {
     if (user) {
@@ -196,7 +199,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             </div>
 
       {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Left Column */}
         <div className="lg:col-span-1 flex flex-col gap-6">
           {/* User Info Card */}
@@ -489,8 +492,77 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           </div>
         </div>
       </div>
-      <section className="h-screen bg-transparent flex items-center justify-center">
-      </section>
+
+      <BecomeDeveloperModal 
+        isOpen={showDeveloperModal} 
+        onClose={() => setShowDeveloperModal(false)} 
+      />
+      
+      {/* Developer CTAs - Moved to bottom */}
+      {/* Become a Developer CTA */}
+      {!userProfile?.isDeveloper && (
+        <div className="mt-8 bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700/50 p-8 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Ready to Share Your Apps?
+              </h3>
+              <p className="text-gray-400">
+                Join our developer community and start publishing your applications to thousands of users.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowDeveloperModal(true)}
+              className="px-6 py-3 bg-blue-600/80 hover:bg-blue-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-blue-500/50 hover:scale-105"
+            >
+              Become a Developer
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Developer Portal Link */}
+      {userProfile?.isDeveloper && userProfile.developerStatus === 'verified' && (
+        <div className="mt-8 bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700/50 p-8 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Developer Portal
+              </h3>
+              <p className="text-gray-400">
+                Manage your published apps, view earnings, and access developer tools.
+              </p>
+            </div>
+            <button
+              onClick={() => router.push('/developer/dashboard')}
+              className="px-6 py-3 bg-blue-600/80 hover:bg-blue-700/90 rounded-xl text-white font-medium transition-all duration-300 shadow-lg hover:shadow-blue-500/50 hover:scale-105"
+            >
+              Go to Portal
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Pending Developer Status */}
+      {userProfile?.isDeveloper && userProfile.developerStatus === 'pending' && (
+        <div className="mt-8 bg-gray-800/50 backdrop-blur-md rounded-2xl border border-yellow-500/30 p-8 shadow-xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-yellow-400 mb-1">
+                Developer Application Pending
+              </h3>
+              <p className="text-gray-300">
+                Your application is under review. You'll be notified once it's been processed (typically 1-2 business days).
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
     
   );

@@ -1,24 +1,59 @@
-import AppTile from './AppTile';
+'use client';
 
-const RECOMMENDED_APPS = [
-  { id: '1', name: 'Demo App 3', icon: '/vercel.svg' },
-  { id: '2', name: 'SmartSeal', icon: '/vercel.svg' },
-  { id: '3', name: 'Predictive Maintenance', icon: '/vercel.svg' },
-  { id: '4', name: 'Work Instruction', icon: '/vercel.svg' },
-  { id: '5', name: 'Manufacturing Analytics', icon: '/vercel.svg' },
-  { id: '6', name: 'Plant Simulation', icon: '/vercel.svg' },
-  { id: '7', name: 'Plant Master', icon: '/vercel.svg' },
-];
+import { useEffect, useState } from 'react';
+import AppTile from './AppTile';
+import { getRecommendedApps, AppCollection } from '@/lib/appCollections';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RecommendedApps() {
+  const { userProfile } = useAuth();
+  const [apps, setApps] = useState<AppCollection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadApps = async () => {
+      try {
+        const userAssets = userProfile?.myAssets || [];
+        const recommendedApps = await getRecommendedApps(userAssets, 10);
+        setApps(recommendedApps);
+      } catch (error) {
+        console.error('Error loading recommended apps:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadApps();
+  }, [userProfile]);
+
+  if (loading) {
+    return (
+      <div className="w-full mt-16">
+        <h2 className="text-2xl font-semibold text-white mb-6 px-8">Recommended Apps</h2>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (apps.length === 0) {
+    return null;
+  }
+
   return (
     <div className="w-full mt-16">
       <h2 className="text-2xl font-semibold text-white mb-6 px-8">Recommended Apps</h2>
       <div className="relative">
         <div className="overflow-x-scroll scroll-hide scrollbar-hide">
           <div className="flex pb-6 px-8" style={{ width: 'max-content' }}>
-            {RECOMMENDED_APPS.map((app) => (
-              <AppTile key={app.id} id={app.id} name={app.name} icon={app.icon} />
+            {apps.map((app) => (
+              <AppTile 
+                key={app.id} 
+                id={app.id} 
+                name={app.AppName} 
+                icon={app.iconURL || '/vercel.svg'} 
+              />
             ))}
           </div>
         </div>

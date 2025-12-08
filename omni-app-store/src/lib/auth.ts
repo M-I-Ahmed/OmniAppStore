@@ -6,12 +6,15 @@ import {
   signOut,
   User
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
+import { createNewUserProfile } from './userProfileService';
+import { UserProfile } from '../types';
 
 const googleProvider = new GoogleAuthProvider();
 
-export interface UserProfile {
+// Legacy interface for backwards compatibility
+export interface LegacyUserProfile {
   userId: string;
   username: string;
   forename: string;
@@ -20,6 +23,9 @@ export interface UserProfile {
   createdAt: any;
   myAssets: string[];
 }
+
+// Export UserProfile type from centralized types
+export type { UserProfile };
 
 // Email/Password Registration
 export const registerWithEmail = async (
@@ -36,18 +42,16 @@ export const registerWithEmail = async (
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Create user profile in Firestore
-    const userProfile: UserProfile = {
-      userId: user.uid,
-      username: generateUsername(userData.forename, userData.surname),
-      forename: userData.forename,
-      surname: userData.surname,
-      organisation: userData.organisation || 'Individual',
-      createdAt: serverTimestamp(),
-      myAssets: []
-    };
+    // Create user profile using the new service
+    await createNewUserProfile(
+      user.uid,
+      email,
+      `${userData.forename} ${userData.surname}`,
+      user.photoURL || undefined
+    );
 
-    await setDoc(doc(db, 'User_Profiles', user.uid), userProfile);
+    // Fetch the created profile
+    const userProfile = await getUserProfile(user.uid);
     
     return { user, userProfile };
   } catch (error: any) {
@@ -81,21 +85,14 @@ export const signInWithGoogle = async () => {
     
     // If no profile exists, create one
     if (!userProfile) {
-      const newProfile: UserProfile = {
-        userId: user.uid,
-        username: generateUsername(
-          user.displayName?.split(' ')[0] || 'User',
-          user.displayName?.split(' ')[1] || ''
-        ),
-        forename: user.displayName?.split(' ')[0] || 'User',
-        surname: user.displayName?.split(' ')[1] || '',
-        organisation: 'Individual',
-        createdAt: serverTimestamp(),
-        myAssets: []
-      };
+      await createNewUserProfile(
+        user.uid,
+        user.email || '',
+        user.displayName || 'User',
+        user.photoURL || undefined
+      );
       
-      await setDoc(doc(db, 'User_Profiles', user.uid), newProfile);
-      userProfile = newProfile;
+      userProfile = await getUserProfile(user.uid);
     }
     
     return { user, userProfile };
@@ -127,11 +124,4 @@ export const logOut = async () => {
   } catch (error: any) {
     throw new Error(error.message);
   }
-};
-
-// Helper function to generate username
-const generateUsername = (forename: string, surname: string): string => {
-  const base = `${forename.toLowerCase()}${surname.toLowerCase()}`;
-  const random = Math.floor(Math.random() * 1000);
-  return `${base}${random}`;
 };

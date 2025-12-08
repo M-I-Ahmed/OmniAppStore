@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import AppTileConnected from "@/components/AppInfoConnected/AppTileConnected";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface App {
   id: string;
@@ -23,6 +23,7 @@ type DropdownKeys = 'category' | 'developer' | 'compatibleAssets' | 'capability'
 
 export default function AllAppsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [apps, setApps] = useState<App[]>([]);
@@ -45,6 +46,14 @@ export default function AllAppsPage() {
     rating: false,
     price: false
   });
+
+  // Set search query from URL parameter
+  useEffect(() => {
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchQuery(search);
+    }
+  }, [searchParams]);
 
   // Filter options
   const categories = ["CNC", "Robotics", "AI/ML", "Predictive Maintenance", "Quality Control", "Safety", "Automation", "IoT", "Analytics", "Manufacturing"];

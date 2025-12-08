@@ -16,7 +16,8 @@ import { testFirebaseConnection } from '@/lib/test-firebase';
 export default function Home() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Add this state
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   useEffect(() => {
@@ -41,6 +42,16 @@ export default function Home() {
 
   const handleExploreApps = () => {
     router.push('/AllApps');
+  };
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to AllApps page with search query as URL parameter
+      router.push(`/AllApps?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/AllApps');
+    }
   };
 
   return (
@@ -129,15 +140,19 @@ export default function Home() {
 
           {/* Search Bar */}
           <div className="w-full max-w-xl mt-10">
-            <div className="flex items-center px-2 py-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg transition-all">
+            <form onSubmit={handleSearch} className="flex items-center px-2 py-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg transition-all">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Unlock new capabilities..."
                 className="flex-grow bg-transparent outline-none text-white placeholder-gray-300 text-lg px-2 py-2 "
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
               {/* Search icon (Heroicons or SVG) */}
               <button
-                type="button"
+                type="submit"
+                onClick={handleSearch}
                 className="
                   ml-2 flex items-center justify-center
                   h-10 w-10
@@ -163,7 +178,7 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
                 </svg>
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Pills Container */}

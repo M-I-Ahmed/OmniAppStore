@@ -1,23 +1,56 @@
-import AppTile from './AppTile';
+'use client';
 
-const RECENTLY_ADDED_APPS = [
-  { id: '1', name: 'Demo App 2', icon: '/vercel.svg' },
-  { id: '2', name: 'Anomaly Detection', icon: '/vercel.svg' },
-  { id: '3', name: 'Tool Wear Prediction', icon: '/vercel.svg' },
-  { id: '4', name: 'CNC Calculator', icon: '/vercel.svg' },
-  { id: '5', name: 'Data Acquisition', icon: '/vercel.svg' },
-  { id: '6', name: 'Process Monitor', icon: '/vercel.svg' },
-];
+import { useEffect, useState } from 'react';
+import AppTile from './AppTile';
+import { getRecentlyAddedApps, AppCollection } from '@/lib/appCollections';
 
 export default function RecentlyAddedApps() {
+  const [apps, setApps] = useState<AppCollection[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadApps = async () => {
+      try {
+        const recentApps = await getRecentlyAddedApps(10);
+        setApps(recentApps);
+      } catch (error) {
+        console.error('Error loading recently added apps:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadApps();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full mt-16">
+        <h2 className="text-2xl font-semibold text-white mb-6 px-8">Recently Added</h2>
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (apps.length === 0) {
+    return null;
+  }
+
   return (
     <div className="w-full mt-16">
       <h2 className="text-2xl font-semibold text-white mb-6 px-8">Recently Added</h2>
       <div className="relative">
         <div className="overflow-x-scroll scroll-hide scrollbar-hide">
           <div className="flex pb-6 px-8" style={{ width: 'max-content' }}>
-            {RECENTLY_ADDED_APPS.map((app) => (
-              <AppTile key={app.id} id={app.id} name={app.name} icon={app.icon} />
+            {apps.map((app) => (
+              <AppTile 
+                key={app.id} 
+                id={app.id} 
+                name={app.AppName} 
+                icon={app.iconURL || '/vercel.svg'} 
+              />
             ))}
           </div>
         </div>
