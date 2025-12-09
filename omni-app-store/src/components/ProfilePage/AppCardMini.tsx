@@ -64,18 +64,18 @@ export default function AppCardMini({ app, onClick }: AppCardMiniProps) {
         </h4>
         
         <div className="flex items-center gap-1">
-          {renderStars(app.AverageRating)}
+          {renderStars(app.AverageRating || 0)}
           <span className="text-xs text-slate-400 ml-1">
-            {app.AverageRating.toFixed(1)}
+            {(app.AverageRating || 0).toFixed(1)}
           </span>
         </div>
 
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs px-2 py-0.5 bg-slate-600/50 text-slate-300 rounded truncate">
-            {app.Tags[0] || 'App'}
+            {app.Tags?.[0] || 'App'}
           </span>
           <span className="text-xs font-medium text-emerald-400">
-            {app.Price === 0 ? 'Free' : `$${app.Price}`}
+            {(app.Price || 0) === 0 ? 'Free' : `$${app.Price}`}
           </span>
         </div>
       </div>

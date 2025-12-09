@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc, collection, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, updateDoc, arrayUnion, query, where } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
 import { logUserEvent } from "@/lib/eventLogger";
@@ -156,11 +156,28 @@ export default function AppDetails({ appName }: AppDetailsProps) {
         return;
       }
 
+      console.log('Found app with ID:', appDocId);
+
       // Add app to user's myApps array
       const userRef = doc(db, 'User_Profiles', user.uid);
       await updateDoc(userRef, {
         myApps: arrayUnion(appDocId)
       });
+
+      console.log('Added app to user myApps');
+
+      // Increment download count for the app
+      const appRef = doc(db, 'Apps', appDocId);
+      const appSnapshot = await getDoc(appRef);
+      const currentDownloads = appSnapshot.data()?.downloads || 0;
+      
+      console.log('Current downloads:', currentDownloads);
+      
+      await updateDoc(appRef, {
+        downloads: currentDownloads + 1
+      });
+
+      console.log('Updated downloads to:', currentDownloads + 1);
 
       // Log the event
       await logUserEvent(

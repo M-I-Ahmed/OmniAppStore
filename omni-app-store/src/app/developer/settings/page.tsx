@@ -105,8 +105,8 @@ export default function DeveloperSettings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -120,10 +120,10 @@ export default function DeveloperSettings() {
       <div className="p-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold text-white mb-2">
             Developer Settings
           </h1>
-          <p className="text-slate-400">Manage your developer profile and preferences</p>
+          <p className="text-gray-400">Manage your developer profile and preferences</p>
         </div>
 
         <div className="space-y-6">

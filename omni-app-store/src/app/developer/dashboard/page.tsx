@@ -43,15 +43,19 @@ export default function DeveloperDashboard() {
       
       // Calculate stats from published apps
       let totalDownloads = 0;
+      let totalEarnings = 0;
       appsSnapshot.docs.forEach(doc => {
         const appData = doc.data();
-        totalDownloads += appData.downloads || 0;
+        const downloads = appData.downloads || 0;
+        const price = appData.AppPrice || 0;
+        totalDownloads += downloads;
+        totalEarnings += downloads * price;
       });
 
       setStats({
-        totalApps: userProfile?.publishedApps?.length || 0,
+        totalApps: appsSnapshot.docs.length,
         totalDownloads,
-        totalEarnings: userProfile?.totalEarnings || 0,
+        totalEarnings,
         activeUsers: Math.floor(totalDownloads * 0.6) // Estimate: 60% of downloads are active
       });
     } catch (error) {

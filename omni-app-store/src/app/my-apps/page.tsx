@@ -218,15 +218,15 @@ export default function MyAppsPage() {
 
                 {/* Rating */}
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="flex">{renderStars(app.AverageRating)}</div>
+                  <div className="flex">{renderStars(app.AverageRating || 0)}</div>
                   <span className="text-sm text-gray-400">
-                    {app.AverageRating.toFixed(1)}
+                    {(app.AverageRating || 0).toFixed(1)}
                   </span>
                 </div>
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {app.Tags.slice(0, 2).map((tag, index) => (
+                  {app.Tags?.slice(0, 2).map((tag, index) => (
                     <span
                       key={index}
                       className="px-2 py-1 bg-gray-700/50 text-gray-300 text-xs rounded"
@@ -234,9 +234,9 @@ export default function MyAppsPage() {
                       {tag}
                     </span>
                   ))}
-                  {app.Tags.length > 2 && (
+                  {(app.Tags?.length || 0) > 2 && (
                     <span className="px-2 py-1 bg-gray-700/50 text-gray-400 text-xs rounded">
-                      +{app.Tags.length - 2}
+                      +{(app.Tags?.length || 0) - 2}
                     </span>
                   )}
                 </div>
