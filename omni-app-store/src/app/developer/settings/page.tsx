@@ -120,16 +120,16 @@ export default function DeveloperSettings() {
       <div className="p-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">
             Developer Settings
           </h1>
-          <p className="text-gray-400">Manage your developer profile and preferences</p>
+          <p className="text-slate-400">Manage your developer profile and preferences</p>
         </div>
 
         <div className="space-y-6">
           {/* Developer Profile Section */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-            <h2 className="text-2xl font-bold text-white mb-6">Developer Profile</h2>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300">
+            <h2 className="text-2xl font-bold text-slate-100 mb-6">Developer Profile</h2>
             
             <div className="space-y-4">
               <div>
@@ -183,13 +183,13 @@ export default function DeveloperSettings() {
           </div>
 
           {/* Notification Preferences */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-            <h2 className="text-2xl font-bold text-white mb-6">Notification Preferences</h2>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300">
+            <h2 className="text-2xl font-bold text-slate-100 mb-6">Notification Preferences</h2>
             
             <div className="space-y-4">
               <label className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors">
                 <div>
-                  <h3 className="text-white font-medium">App Updates</h3>
+                  <h3 className="text-slate-100 font-medium">App Updates</h3>
                   <p className="text-sm text-slate-400">Get notified about updates to your connected apps</p>
                 </div>
                 <input
@@ -202,7 +202,7 @@ export default function DeveloperSettings() {
 
               <label className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors">
                 <div>
-                  <h3 className="text-white font-medium">New Reviews</h3>
+                  <h3 className="text-slate-100 font-medium">New Reviews</h3>
                   <p className="text-sm text-slate-400">Get notified when users review your apps</p>
                 </div>
                 <input
@@ -215,7 +215,7 @@ export default function DeveloperSettings() {
 
               <label className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors">
                 <div>
-                  <h3 className="text-white font-medium">Payouts</h3>
+                  <h3 className="text-slate-100 font-medium">Payouts</h3>
                   <p className="text-sm text-slate-400">Get notified about payout processing and earnings</p>
                 </div>
                 <input
@@ -228,7 +228,7 @@ export default function DeveloperSettings() {
 
               <label className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors">
                 <div>
-                  <h3 className="text-white font-medium">Asset Alerts</h3>
+                  <h3 className="text-slate-100 font-medium">Asset Alerts</h3>
                   <p className="text-sm text-slate-400">Get notified about your asset availability and status</p>
                 </div>
                 <input
@@ -250,8 +250,8 @@ export default function DeveloperSettings() {
           </div>
 
           {/* Account Information (Read-only) */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-            <h2 className="text-2xl font-bold text-white mb-6">Account Information</h2>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300">
+            <h2 className="text-2xl font-bold text-slate-100 mb-6">Account Information</h2>
             
             <div className="space-y-4">
               <div className="flex justify-between items-center p-4 bg-slate-800/30 rounded-lg">
@@ -267,17 +267,17 @@ export default function DeveloperSettings() {
 
               <div className="flex justify-between items-center p-4 bg-slate-800/30 rounded-lg">
                 <span className="text-slate-300">Email</span>
-                <span className="text-white">{user.email}</span>
+                <span className="text-slate-100">{user.email}</span>
               </div>
 
               <div className="flex justify-between items-center p-4 bg-slate-800/30 rounded-lg">
                 <span className="text-slate-300">User ID</span>
-                <span className="text-white font-mono text-sm">{user.uid}</span>
+                <span className="text-slate-100 font-mono text-sm">{user.uid}</span>
               </div>
 
               <div className="flex justify-between items-center p-4 bg-slate-800/30 rounded-lg">
                 <span className="text-slate-300">Member Since</span>
-                <span className="text-white">
+                <span className="text-slate-100">
                   {userProfile.createdAt?.toDate ? 
                     userProfile.createdAt.toDate().toLocaleDateString('en-US', { 
                       month: 'long', 
@@ -292,7 +292,7 @@ export default function DeveloperSettings() {
           </div>
 
           {/* Danger Zone */}
-          <div className="bg-gradient-to-br from-red-900/20 via-slate-900 to-slate-900 rounded-xl border border-red-500/20 p-6 shadow-lg">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-red-500/25 transition-all duration-300">
             <h2 className="text-2xl font-bold text-red-400 mb-4">Danger Zone</h2>
             <p className="text-slate-400 mb-4">
               These actions are permanent and cannot be undone.

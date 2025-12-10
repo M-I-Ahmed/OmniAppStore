@@ -115,15 +115,15 @@ export default function DeveloperEarnings() {
       <div className="p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">
             Earnings
           </h1>
-          <p className="text-gray-400">Manage your revenue and payout settings</p>
+          <p className="text-slate-400">Manage your revenue and payout settings</p>
         </div>
 
         {/* Earnings Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-green-500/20 p-6 shadow-lg shadow-green-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,11 +131,11 @@ export default function DeveloperEarnings() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">${getTotalEarnings().toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">${getTotalEarnings().toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">Total Earnings</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-blue-500/20 p-6 shadow-lg shadow-blue-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -143,11 +143,11 @@ export default function DeveloperEarnings() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">${getMonthlyEarnings().toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">${getMonthlyEarnings().toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">This Month</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-purple-500/20 p-6 shadow-lg shadow-purple-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -155,14 +155,14 @@ export default function DeveloperEarnings() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">${getAvailableBalance().toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">${getAvailableBalance().toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">Available Balance</p>
           </div>
         </div>
 
         {/* Revenue Breakdown */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Revenue by App</h2>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 mb-8">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6">Revenue by App</h2>
           
           {apps.length === 0 ? (
             <div className="text-center py-12">
@@ -178,7 +178,7 @@ export default function DeveloperEarnings() {
                   <div key={app.id} className="bg-slate-800/30 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div>
-                        <h3 className="text-white font-medium">{app.AppName}</h3>
+                        <h3 className="text-slate-100 font-medium">{app.AppName}</h3>
                         <p className="text-slate-400 text-sm">{app.downloads || 0} downloads × ${app.AppPrice || 0}</p>
                       </div>
                       <div className="text-right">
@@ -200,9 +200,9 @@ export default function DeveloperEarnings() {
         </div>
 
         {/* Payout Settings */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg mb-8">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Payout Settings</h2>
+            <h2 className="text-2xl font-bold text-slate-100">Payout Settings</h2>
             {!editingPayout && (
               <button
                 onClick={() => setEditingPayout(true)}
@@ -275,8 +275,8 @@ export default function DeveloperEarnings() {
         </div>
 
         {/* Transaction History */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">Transaction History</h2>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6">Transaction History</h2>
           
           <div className="text-center py-12">
             <svg className="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

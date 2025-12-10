@@ -65,7 +65,7 @@ export default function DeveloperSideNav({ children }: DeveloperSideNavProps) {
     },
     {
       name: 'Settings',
-      path: '/developer/settings',
+      path: '/settings?tab=developer',
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -81,52 +81,55 @@ export default function DeveloperSideNav({ children }: DeveloperSideNavProps) {
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-black to-blue-950" />
       
       {/* Side Navigation */}
-      <aside className="w-64 bg-gray-900/50 backdrop-blur-md border-r border-gray-700/50 flex flex-col">
+      <aside className="w-64 bg-slate-900/50 backdrop-blur-md border-r border-slate-700/50 flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-gray-700/50">
-          <h2 className="text-xl font-bold text-white">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-xl font-bold text-slate-100">
             Developer Portal
           </h2>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-slate-400 text-sm mt-1">
             {userProfile.developerProfile?.companyName || 'Independent Developer'}
           </p>
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.path;
+            // Special handling for settings to check if we're on the settings page with developer tab
+            const isActive = item.name === 'Settings' 
+              ? pathname === '/settings' || pathname.startsWith('/settings')
+              : pathname === item.path;
             return (
               <button
                 key={item.path}
                 onClick={() => router.push(item.path)}
                 className={`
-                  w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
+                  w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all font-medium
                   ${isActive 
-                    ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30' 
-                    : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' 
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-slate-100'
                   }
                 `}
               >
-                <span className={isActive ? 'text-blue-400' : 'text-gray-400'}>
+                <span className={isActive ? 'text-white' : 'text-slate-400'}>
                   {item.icon}
                 </span>
-                <span className="font-medium">{item.name}</span>
+                <span>{item.name}</span>
               </button>
             );
           })}
         </nav>
 
         {/* Footer - Back to Consumer View */}
-        <div className="p-4 border-t border-gray-700/50">
+        <div className="p-4 border-t border-slate-700/50">
           <button
             onClick={() => router.push(`/ProfilePage/${userProfile.uid}`)}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-slate-100 transition-all font-medium"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <span className="font-medium">Back to Profile</span>
+            <span>Back to Profile</span>
           </button>
         </div>
       </aside>

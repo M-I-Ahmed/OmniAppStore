@@ -71,6 +71,16 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
     setAiFilledFields(new Set());
   };
 
+  const resetCreateForm = () => {
+    setManufacturer('');
+    setModel('');
+    setAssetClass('');
+    setImageFile(null);
+    setImagePreview('');
+    setPdfFile(null);
+    setAiFilledFields(new Set());
+  };
+
   useEffect(() => {
     if (isOpen && user) {
       fetchAssets();
@@ -131,21 +141,12 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
         }
         
         setAiFilledFields(fieldsFilledByAI);
-        
-        // Show custom message if provided, otherwise default
-        const message = result.message || (
-          fieldsFilledByAI.size > 0 
-            ? `${fieldsFilledByAI.size} field(s) auto-filled from filename. Please verify and complete the remaining fields.`
-            : 'PDF uploaded successfully. Please fill in the details from your datasheet.'
-        );
-        alert(message);
       } else {
-        // Show error but keep PDF attached
-        alert(result.error || 'Could not auto-extract data. Please fill in manually.');
+        // Log error but don't show popup
+        console.warn('Could not auto-extract data:', result.error);
       }
     } catch (error) {
       console.error('Error processing PDF:', error);
-      alert('PDF uploaded. Please fill in the details manually by referring to the PDF.');
     } finally {
       setIsProcessingPdf(false);
     }
@@ -373,7 +374,7 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                   
                   {/* Show "Add Your Own" button even when results exist */}
                   <div className="text-center pt-4 border-t border-slate-700">
-                    <p className="text-slate-400 text-sm mb-3">Don't see your asset?</p>
+                    <p className="text-slate-400 text-sm mb-3">Can't find what you're looking for?</p>
                     <button
                       onClick={() => setCurrentView('create')}
                       className="px-6 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition-colors inline-flex items-center gap-2"
@@ -402,7 +403,25 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                       You can review and edit any field afterwards.
                     </p>
                     
-                    {pdfFile ? (
+                    {isProcessingPdf ? (
+                      <div className="bg-slate-800 rounded-lg p-6">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="relative">
+                            <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+                            <svg className="w-6 h-6 text-blue-400 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-slate-300 font-medium mb-1">Processing PDF with AI...</p>
+                            <p className="text-slate-500 text-xs">Extracting asset information from {pdfFile?.name}</p>
+                          </div>
+                          <div className="w-full max-w-xs bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                            <div className="h-full bg-blue-500 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : pdfFile ? (
                       <div className="bg-slate-800 rounded-lg p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <svg className="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
@@ -429,15 +448,12 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                           accept=".pdf"
                           onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
                           className="hidden"
-                          disabled={isProcessingPdf}
                         />
                         <div className="border-2 border-dashed border-blue-500/50 hover:border-blue-500 rounded-lg p-6 text-center cursor-pointer transition-colors">
                           <svg className="w-12 h-12 text-blue-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                           </svg>
-                          <p className="text-slate-300 font-medium mb-1">
-                            {isProcessingPdf ? 'Processing PDF...' : 'Upload PDF Datasheet'}
-                          </p>
+                          <p className="text-slate-300 font-medium mb-1">Upload PDF Datasheet</p>
                           <p className="text-slate-500 text-xs">Click to browse or drag and drop</p>
                         </div>
                       </label>
@@ -465,8 +481,7 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                     <p className="text-green-400 text-xs mt-1 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Filled by AI
+                    </svg>
                     </p>
                   )}
                 </div>
@@ -488,8 +503,7 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                     <p className="text-green-400 text-xs mt-1 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Filled by AI
+                    </svg>
                     </p>
                   )}
                 </div>
@@ -514,8 +528,7 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
                     <p className="text-green-400 text-xs mt-1 flex items-center gap-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                      Filled by AI
+                    </svg>
                     </p>
                   )}
                 </div>
@@ -563,12 +576,20 @@ export default function AddAssetModal({ isOpen, onClose, onAssetAdded }: AddAsse
         <div className="flex items-center justify-between p-6 border-t border-slate-700 bg-slate-800/50">
           {currentView === 'create' ? (
             <>
-              <button
-                onClick={() => setCurrentView('search')}
-                className="px-6 py-2.5 text-slate-300 hover:text-slate-100 font-medium transition-colors"
-              >
-                ← Back to Search
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { resetCreateForm(); setCurrentView('search'); }}
+                  className="px-6 py-2.5 text-slate-300 hover:text-slate-100 font-medium transition-colors"
+                >
+                  ← Back to Search
+                </button>
+                <button
+                  onClick={resetCreateForm}
+                  className="px-4 py-2.5 text-slate-400 hover:text-slate-200 font-medium transition-colors text-sm"
+                >
+                  Clear All
+                </button>
+              </div>
               <button
                 onClick={handleCreateNewAsset}
                 disabled={!manufacturer || !model || !assetClass || isLoading}

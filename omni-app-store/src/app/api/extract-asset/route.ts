@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       const pdfDocument = await loadingTask.promise;
       
       const numPages = pdfDocument.numPages;
-      const maxPages = Math.min(numPages, 5); // Only process first 5 pages for speed
+      const maxPages = Math.min(numPages, 3); // Only process first 3 pages for speed
       
       for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
         const page = await pdfDocument.getPage(pageNum);

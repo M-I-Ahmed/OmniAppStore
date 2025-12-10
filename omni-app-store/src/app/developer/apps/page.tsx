@@ -116,10 +116,10 @@ export default function MyPublishedApps() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-slate-100 mb-2">
               My Published Apps
             </h1>
-            <p className="text-gray-400">Manage your published applications</p>
+            <p className="text-slate-400">Manage your published applications</p>
           </div>
           <button
             onClick={() => router.push('/developer/upload')}
@@ -134,50 +134,50 @@ export default function MyPublishedApps() {
 
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg shadow-cyan-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <span className="text-2xl font-bold text-white">{apps.length}</span>
+              <span className="text-2xl font-bold text-slate-100">{apps.length}</span>
             </div>
             <p className="text-slate-400 text-sm">Total Apps</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-green-500/20 p-6 shadow-lg shadow-green-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-2xl font-bold text-white">{apps.filter(a => a.status === 'published' || !a.status).length}</span>
+              <span className="text-2xl font-bold text-slate-100">{apps.filter(a => a.status === 'published' || !a.status).length}</span>
             </div>
             <p className="text-slate-400 text-sm">Published</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-yellow-500/20 p-6 shadow-lg shadow-yellow-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-yellow-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-2xl font-bold text-white">{apps.filter(a => a.status === 'under_review').length}</span>
+              <span className="text-2xl font-bold text-slate-100">{apps.filter(a => a.status === 'under_review').length}</span>
             </div>
             <p className="text-slate-400 text-sm">Under Review</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-gray-500/20 p-6 shadow-lg shadow-gray-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-slate-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-gray-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
               </div>
-              <span className="text-2xl font-bold text-white">{apps.filter(a => a.status === 'draft').length}</span>
+              <span className="text-2xl font-bold text-slate-100">{apps.filter(a => a.status === 'draft').length}</span>
             </div>
             <p className="text-slate-400 text-sm">Drafts</p>
           </div>
@@ -185,13 +185,13 @@ export default function MyPublishedApps() {
 
         {/* Apps List */}
         {apps.length === 0 ? (
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-12 shadow-lg text-center">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-12 hover:shadow-xl transition-all duration-300 shadow-lg text-center">
             <div className="w-20 h-20 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-10 h-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">No Apps Published Yet</h3>
+            <h3 className="text-xl font-semibold text-slate-100 mb-2">No Apps Published Yet</h3>
             <p className="text-slate-400 mb-6">Start by uploading your first application</p>
             <button
               onClick={() => router.push('/developer/upload')}
@@ -205,11 +205,11 @@ export default function MyPublishedApps() {
             {apps.map((app) => (
               <div
                 key={app.id}
-                className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg hover:shadow-cyan-500/10 transition-all"
+                className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-2">{app.AppName}</h3>
+                    <h3 className="text-xl font-bold text-slate-100 mb-2">{app.AppName}</h3>
                     <p className="text-slate-400 text-sm line-clamp-2 mb-3">{app.AppDescription}</p>
                     <div className="flex items-center gap-4 text-sm">
                       <span className="text-slate-500">

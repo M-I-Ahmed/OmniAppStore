@@ -80,16 +80,16 @@ export default function DeveloperDashboard() {
       <div className="p-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">
             Developer Dashboard
           </h1>
-          <p className="text-gray-400">Welcome back, {userProfile.forename || userProfile.displayName}!</p>
+          <p className="text-slate-400">Welcome back, {userProfile.forename || userProfile.displayName}!</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Apps */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg shadow-cyan-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,7 +103,7 @@ export default function DeveloperDashboard() {
           </div>
 
           {/* Total Downloads */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-blue-500/20 p-6 shadow-lg shadow-blue-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,7 +117,7 @@ export default function DeveloperDashboard() {
           </div>
 
           {/* Total Earnings */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-green-500/20 p-6 shadow-lg shadow-green-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,7 +131,7 @@ export default function DeveloperDashboard() {
           </div>
 
           {/* Active Users */}
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-purple-500/20 p-6 shadow-lg shadow-purple-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,7 +149,7 @@ export default function DeveloperDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <button
             onClick={() => router.push('/developer/upload')}
-            className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-xl p-6 hover:from-cyan-500/20 hover:to-blue-500/20 transition-all text-left group"
+            className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 text-left group shadow-lg"
           >
             <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-500/30 transition-colors">
               <svg className="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -162,7 +162,7 @@ export default function DeveloperDashboard() {
 
           <button
             onClick={() => router.push('/developer/analytics')}
-            className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl p-6 hover:from-blue-500/20 hover:to-purple-500/20 transition-all text-left group"
+            className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300 text-left group shadow-lg"
           >
             <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-500/30 transition-colors">
               <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -175,7 +175,7 @@ export default function DeveloperDashboard() {
 
           <button
             onClick={() => router.push('/developer/earnings')}
-            className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-6 hover:from-green-500/20 hover:to-emerald-500/20 transition-all text-left group"
+            className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300 text-left group shadow-lg"
           >
             <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-500/30 transition-colors">
               <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -188,8 +188,8 @@ export default function DeveloperDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">Recent Activity</h2>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl transition-all duration-300 shadow-lg">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6">Recent Activity</h2>
           <div className="space-y-4">
             {recentActivity.length === 0 ? (
               <div className="text-center py-12">

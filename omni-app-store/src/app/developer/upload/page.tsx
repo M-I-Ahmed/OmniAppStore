@@ -161,10 +161,10 @@ export default function UploadNewApp() {
       <div className="p-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">
             Upload New App
           </h1>
-          <p className="text-gray-400">Share your application with the community</p>
+          <p className="text-slate-400">Share your application with the community</p>
         </div>
 
         {/* Progress Steps */}
@@ -175,18 +175,18 @@ export default function UploadNewApp() {
                 <div className="flex items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
                     currentStep >= step
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-700 text-slate-400'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                      : 'bg-slate-800 text-slate-500 border border-slate-700'
                   }`}>
                     {step}
                   </div>
                   {step < 4 && (
                     <div className={`flex-1 h-1 mx-2 transition-all ${
-                      currentStep > step ? 'bg-blue-600' : 'bg-slate-700'
+                      currentStep > step ? 'bg-blue-600' : 'bg-slate-800'
                     }`} />
                   )}
                 </div>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-xs text-slate-500 mt-2">
                   {step === 1 && 'Basic Info'}
                   {step === 2 && 'Category & Price'}
                   {step === 3 && 'Files & Media'}
@@ -198,11 +198,11 @@ export default function UploadNewApp() {
         </div>
 
         {/* Form Content */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-8 shadow-lg min-h-[400px]">
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-8 hover:border-slate-600 hover:shadow-xl transition-all duration-200 shadow-lg min-h-[400px]">
           {/* Step 1: Basic Info */}
           {currentStep === 1 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Basic Information</h2>
+              <h2 className="text-2xl font-bold text-slate-100 mb-6">Basic Information</h2>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -213,7 +213,7 @@ export default function UploadNewApp() {
                   value={appName}
                   onChange={(e) => setAppName(e.target.value)}
                   placeholder="My Awesome App"
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
                 />
               </div>
 
@@ -226,7 +226,7 @@ export default function UploadNewApp() {
                   onChange={(e) => setAppDescription(e.target.value)}
                   placeholder="Describe what makes your app unique..."
                   rows={6}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors resize-none"
                 />
                 <p className="text-xs text-slate-500 mt-1">{appDescription.length}/1000 characters</p>
               </div>
@@ -236,7 +236,7 @@ export default function UploadNewApp() {
           {/* Step 2: Category & Price */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Category & Pricing</h2>
+              <h2 className="text-2xl font-bold text-slate-100 mb-6">Category & Pricing</h2>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -245,7 +245,7 @@ export default function UploadNewApp() {
                 <select
                   value={appCategory}
                   onChange={(e) => setAppCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                  className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
                 >
                   <option value="">Select a category</option>
                   {categories.map((cat) => (
@@ -267,7 +267,7 @@ export default function UploadNewApp() {
                     min="0"
                     step="0.01"
                     placeholder="0.00"
-                    className="w-full pl-8 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                    className="w-full pl-8 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-colors"
                   />
                 </div>
                 <p className="text-xs text-slate-500 mt-1">Set to 0 for free apps</p>
@@ -278,13 +278,13 @@ export default function UploadNewApp() {
           {/* Step 3: Files & Media */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Files & Media</h2>
+              <h2 className="text-2xl font-bold text-slate-100 mb-6">Files & Media</h2>
               
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   App File
                 </label>
-                <div className="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center hover:border-cyan-500/50 transition-colors">
+                <div className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
                   <input
                     type="file"
                     onChange={handleFileChange}
@@ -293,13 +293,13 @@ export default function UploadNewApp() {
                     accept=".zip,.exe,.dmg,.app"
                   />
                   <label htmlFor="app-file" className="cursor-pointer">
-                    <svg className="w-12 h-12 text-slate-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-12 h-12 text-blue-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
-                    <p className="text-slate-300 font-medium">Click to upload app file</p>
+                    <p className="text-slate-200 font-medium">Click to upload app file</p>
                     <p className="text-xs text-slate-500 mt-1">ZIP, EXE, DMG, APP (Max 500MB)</p>
                     {appFile && (
-                      <p className="text-cyan-400 mt-2 text-sm">{appFile.name}</p>
+                      <p className="text-blue-400 mt-2 text-sm font-medium">{appFile.name}</p>
                     )}
                   </label>
                 </div>
@@ -309,7 +309,7 @@ export default function UploadNewApp() {
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Screenshots (Max 5)
                 </label>
-                <div className="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center hover:border-cyan-500/50 transition-colors">
+                <div className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center hover:border-blue-500/50 transition-colors cursor-pointer">
                   <input
                     type="file"
                     onChange={handleScreenshotsChange}
@@ -387,7 +387,7 @@ export default function UploadNewApp() {
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-100 font-medium rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all border border-slate-700"
             >
               Back
             </button>
@@ -395,7 +395,7 @@ export default function UploadNewApp() {
             {currentStep < 4 ? (
               <button
                 onClick={handleNext}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/20"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-blue-500/30"
               >
                 Next
               </button>
@@ -403,7 +403,7 @@ export default function UploadNewApp() {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-green-500/20"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/30"
               >
                 {isSubmitting ? 'Uploading...' : 'Publish App'}
               </button>

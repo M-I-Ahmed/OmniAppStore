@@ -96,10 +96,10 @@ export default function DeveloperAnalytics() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="text-4xl font-bold text-slate-100 mb-2">
               Analytics
             </h1>
-            <p className="text-gray-400">Track your app performance and user engagement</p>
+            <p className="text-slate-400">Track your app performance and user engagement</p>
           </div>
 
           {/* App Filter */}
@@ -117,7 +117,7 @@ export default function DeveloperAnalytics() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-blue-500/20 p-6 shadow-lg shadow-blue-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-blue-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,11 +125,11 @@ export default function DeveloperAnalytics() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{getTotalDownloads().toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">{getTotalDownloads().toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">Total Downloads</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-yellow-500/20 p-6 shadow-lg shadow-yellow-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-yellow-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -137,11 +137,11 @@ export default function DeveloperAnalytics() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{getAverageRating()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">{getAverageRating()}</h3>
             <p className="text-slate-400 text-sm">Average Rating</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-green-500/20 p-6 shadow-lg shadow-green-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,11 +149,11 @@ export default function DeveloperAnalytics() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">${getTotalRevenue().toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">${getTotalRevenue().toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">Total Revenue</p>
           </div>
 
-          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-purple-500/20 p-6 shadow-lg shadow-purple-500/5">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-purple-500/25 transition-all duration-300">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -161,14 +161,14 @@ export default function DeveloperAnalytics() {
                 </svg>
               </div>
             </div>
-            <h3 className="text-3xl font-bold text-white mb-1">{Math.floor(getTotalDownloads() * 0.6).toLocaleString()}</h3>
+            <h3 className="text-3xl font-bold text-slate-100 mb-1">{Math.floor(getTotalDownloads() * 0.6).toLocaleString()}</h3>
             <p className="text-slate-400 text-sm">Active Users</p>
           </div>
         </div>
 
         {/* Downloads Chart Placeholder */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Downloads Over Time</h2>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300 mb-8">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6">Downloads Over Time</h2>
           <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-700 rounded-lg">
             <div className="text-center">
               <svg className="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,8 +181,8 @@ export default function DeveloperAnalytics() {
         </div>
 
         {/* App Performance Table */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl border border-cyan-500/20 p-6 shadow-lg">
-          <h2 className="text-2xl font-bold text-white mb-6">App Performance</h2>
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 hover:shadow-xl hover:shadow-cyan-500/25 transition-all duration-300">
+          <h2 className="text-2xl font-bold text-slate-100 mb-6">App Performance</h2>
           
           {apps.length === 0 ? (
             <div className="text-center py-12">
@@ -204,7 +204,7 @@ export default function DeveloperAnalytics() {
                   {apps.map((app) => (
                     <tr key={app.id} className="border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
                       <td className="py-4 px-4">
-                        <div className="text-white font-medium">{app.AppName}</div>
+                        <div className="text-slate-100 font-medium">{app.AppName}</div>
                       </td>
                       <td className="py-4 px-4">
                         <span className="text-slate-300 text-sm">{app.AppCategory || 'Uncategorized'}</span>
