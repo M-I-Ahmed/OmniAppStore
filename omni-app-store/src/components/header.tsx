@@ -100,13 +100,21 @@ export default function Header() {
                 "
               >
                 {/* User Avatar */}
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                  {userProfile?.forename?.charAt(0) || user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
-                </div>
+                {userProfile?.photoURL ? (
+                  <img 
+                    src={userProfile.photoURL} 
+                    alt="Profile" 
+                    className="w-8 h-8 rounded-full object-cover border border-gray-600"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    {userProfile?.displayName?.charAt(0) || userProfile?.forename?.charAt(0) || user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                  </div>
+                )}
                 
                 {/* User Name */}
                 <span className="hidden sm:block">
-                  {userProfile?.forename || user.displayName?.split(' ')[0] || 'User'}
+                  {userProfile?.displayName || userProfile?.forename || user.displayName?.split(' ')[0] || 'User'}
                 </span>
                 
                 {/* Dropdown Arrow */}
@@ -126,7 +134,7 @@ export default function Header() {
                   {/* User Info Section */}
                   <div className="px-4 py-3 border-b border-gray-700/50">
                     <p className="text-sm font-medium text-white">
-                      {userProfile?.forename} {userProfile?.surname}
+                      {userProfile?.displayName || `${userProfile?.forename} ${userProfile?.surname}`.trim() || user.displayName || 'User'}
                     </p>
                     <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     {userProfile?.organisation && (

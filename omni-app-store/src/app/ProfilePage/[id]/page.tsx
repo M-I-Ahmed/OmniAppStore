@@ -214,11 +214,19 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700/50 p-6 shadow-xl">
             <div className="text-center mb-6">
               {/* Large Avatar */}
-              <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4">
-                {userProfile.forename?.charAt(0)}{userProfile.surname?.charAt(0)}
-              </div>
+              {userProfile.photoURL ? (
+                <img 
+                  src={userProfile.photoURL} 
+                  alt="Profile" 
+                  className="w-24 h-24 rounded-full object-cover border-2 border-gray-700 mx-auto mb-4"
+                />
+              ) : (
+                <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4">
+                  {userProfile.displayName?.charAt(0) || userProfile.forename?.charAt(0)}{userProfile.surname?.charAt(0)}
+                </div>
+              )}
               <h2 className="text-2xl font-bold text-white">
-                {userProfile.forename} {userProfile.surname}
+                {userProfile.displayName || `${userProfile.forename} ${userProfile.surname}`.trim() || 'User'}
               </h2>
               <p className="text-gray-400">{user.email}</p>
               {userProfile.organisation && (

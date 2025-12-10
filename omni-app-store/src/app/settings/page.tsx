@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { updateDeveloperProfile, updatePreferences } from '@/lib/userProfileService';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 type TabType = 'profile' | 'notifications' | 'privacy' | 'developer' | 'payment' | 'security' | 'appearance' | 'account';
 
@@ -42,6 +43,9 @@ export default function Settings() {
   // Profile Form
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Developer Profile Form
   const [companyName, setCompanyName] = useState('');
@@ -91,6 +95,7 @@ export default function Settings() {
     if (userProfile) {
       setDisplayName(userProfile.displayName || '');
       setBio(userProfile.bio || '');
+      setProfilePicture(userProfile.photoURL || null);
       
       if (userProfile.developerProfile) {
         setCompanyName(userProfile.developerProfile.companyName || '');
@@ -110,12 +115,94 @@ export default function Settings() {
     }
   }, [userProfile]);
 
+  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showToast('Please upload an image file', 'error');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image size must be less than 5MB', 'error');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      // Create a storage reference
+      const storageRef = ref(storage, `profile-pictures/${user.uid}/${Date.now()}_${file.name}`);
+      
+      // Upload the file
+      await uploadBytes(storageRef, file);
+      
+      // Get the download URL
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      // Update the profile picture in Firestore
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      await updateDoc(userRef, {
+        photoURL: downloadURL
+      });
+
+      // Update local state
+      setProfilePicture(downloadURL);
+      
+      if (userProfile) {
+        setUserProfile({
+          ...userProfile,
+          photoURL: downloadURL
+        });
+      }
+
+      showToast('Profile picture updated successfully! 📸', 'success');
+    } catch (error: any) {
+      console.error('Error uploading profile picture:', error);
+      const errorMessage = error?.message || 'Failed to upload profile picture. Please try again.';
+      showToast(`Error: ${errorMessage}`, 'error');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleDeleteProfilePicture = async () => {
+    if (!user) return;
+
+    setUploadingImage(true);
+    try {
+      const userRef = doc(db, 'User_Profiles', user.uid);
+      await updateDoc(userRef, {
+        photoURL: null
+      });
+
+      setProfilePicture(null);
+      
+      if (userProfile) {
+        setUserProfile({
+          ...userProfile,
+          photoURL: null
+        });
+      }
+
+      showToast('Profile picture removed successfully! 🗑️', 'success');
+    } catch (error: any) {
+      console.error('Error deleting profile picture:', error);
+      const errorMessage = error?.message || 'Failed to delete profile picture. Please try again.';
+      showToast(`Error: ${errorMessage}`, 'error');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     if (!user) return;
 
     setIsSaving(true);
     try {
-      const userRef = doc(db, 'Users', user.uid);
+      const userRef = doc(db, 'User_Profiles', user.uid);
       await updateDoc(userRef, {
         displayName,
         bio
@@ -130,9 +217,10 @@ export default function Settings() {
       }
 
       showToast('Profile updated successfully! ✨', 'success');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating profile:', error);
-      showToast('Failed to update profile. Please try again.', 'error');
+      const errorMessage = error?.message || 'Failed to update profile. Please try again.';
+      showToast(`Error: ${errorMessage}`, 'error');
     } finally {
       setIsSaving(false);
     }
@@ -201,7 +289,7 @@ export default function Settings() {
 
     setIsSaving(true);
     try {
-      const userRef = doc(db, 'Users', user.uid);
+      const userRef = doc(db, 'User_Profiles', user.uid);
       await updateDoc(userRef, {
         paypalEmail: payoutSettings.paypalEmail,
         bankAccount: payoutSettings.bankAccount,
@@ -383,12 +471,45 @@ export default function Settings() {
                     Profile Picture
                   </label>
                   <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white">
-                      {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+                    <div className="relative">
+                      {profilePicture ? (
+                        <>
+                          <img 
+                            src={profilePicture} 
+                            alt="Profile" 
+                            className="w-20 h-20 rounded-full object-cover border-2 border-slate-700"
+                          />
+                          <button
+                            onClick={handleDeleteProfilePicture}
+                            disabled={uploadingImage}
+                            className="absolute -top-1 -right-1 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center text-white transition-all duration-300 shadow-lg hover:shadow-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed group"
+                            title="Delete profile picture"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </>
+                      ) : (
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white">
+                          {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase()}
+                        </div>
+                      )}
                     </div>
                     <div>
-                      <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                        Upload Photo
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleProfilePictureUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <button 
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingImage}
+                        className="px-4 py-2 bg-slate-800/50 backdrop-blur-sm hover:shadow-lg hover:shadow-blue-500/25 text-slate-100 rounded-lg text-sm font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {uploadingImage ? 'Uploading...' : 'Upload Photo'}
                       </button>
                       <p className="text-xs text-slate-500 mt-2">JPG, PNG or GIF. Max 5MB.</p>
                     </div>
@@ -452,14 +573,14 @@ export default function Settings() {
                       setDisplayName(userProfile?.displayName || '');
                       setBio(userProfile?.bio || '');
                     }}
-                    className="px-6 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium transition-colors"
+                    className="px-6 py-2.5 bg-slate-800/50 backdrop-blur-sm hover:shadow-lg hover:shadow-slate-500/25 text-slate-100 rounded-lg font-medium transition-all duration-300"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveProfile}
                     disabled={isSaving}
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/20"
+                    className="px-6 py-2.5 bg-blue-600 hover:shadow-xl hover:shadow-blue-500/25 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -592,7 +713,7 @@ export default function Settings() {
                   <button
                     onClick={handleSaveNotifications}
                     disabled={isSaving}
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/20"
+                    className="px-6 py-2.5 bg-blue-600 hover:shadow-xl hover:shadow-blue-500/25 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     {isSaving ? 'Saving...' : 'Save Preferences'}
                   </button>
@@ -651,7 +772,7 @@ export default function Settings() {
                   <button
                     onClick={handleSaveDeveloperProfile}
                     disabled={isSaving}
-                    className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-lg hover:from-cyan-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-cyan-500/20"
+                    className="px-6 py-3 bg-cyan-600 hover:shadow-xl hover:shadow-cyan-500/25 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     {isSaving ? 'Saving...' : 'Save Developer Profile'}
                   </button>
@@ -703,7 +824,7 @@ export default function Settings() {
                   <button
                     onClick={handleSavePayoutSettings}
                     disabled={isSaving}
-                    className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-cyan-500/20"
+                    className="px-6 py-3 bg-cyan-600 hover:shadow-xl hover:shadow-cyan-500/25 text-white rounded-lg font-medium transition-all duration-300"
                   >
                     {isSaving ? 'Saving...' : 'Save Payout Settings'}
                   </button>
@@ -801,7 +922,7 @@ export default function Settings() {
                 <div className="border-t border-slate-700/50 pt-6 flex justify-end">
                   <button
                     onClick={() => showToast('Privacy settings saved!', 'success')}
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/20"
+                    className="px-6 py-2.5 bg-blue-600 hover:shadow-xl hover:shadow-blue-500/25 text-white font-medium rounded-lg transition-all duration-300"
                   >
                     Save Preferences
                   </button>
@@ -897,7 +1018,7 @@ export default function Settings() {
                 <div className="border-t border-slate-700/50 pt-6 flex justify-end">
                   <button
                     onClick={() => showToast('Appearance settings saved!', 'success')}
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/20"
+                    className="px-6 py-2.5 bg-blue-600 hover:shadow-xl hover:shadow-blue-500/25 text-white font-medium rounded-lg transition-all duration-300"
                   >
                     Save Preferences
                   </button>
@@ -1012,7 +1133,7 @@ export default function Settings() {
                   <button
                     onClick={handleSavePayoutSettings}
                     disabled={isSaving}
-                    className="px-6 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium rounded-lg hover:from-green-600 hover:to-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-green-500/20"
+                    className="px-6 py-2.5 bg-green-600 hover:shadow-xl hover:shadow-green-500/25 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
                     {isSaving ? 'Saving...' : 'Save Payment Settings'}
                   </button>
@@ -1057,7 +1178,7 @@ export default function Settings() {
                         className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                       />
                     </div>
-                    <button className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    <button className="px-6 py-2.5 bg-blue-600 hover:shadow-xl hover:shadow-blue-500/25 text-white rounded-lg font-medium transition-all duration-300">
                       Update Password
                     </button>
                   </div>
@@ -1073,7 +1194,7 @@ export default function Settings() {
                       </div>
                       <p className="text-sm text-slate-400">Add an extra layer of security to your account</p>
                     </div>
-                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg font-medium transition-colors">
+                    <button className="px-4 py-2 bg-blue-600 hover:shadow-lg hover:shadow-blue-500/25 text-white text-sm rounded-lg font-medium transition-all duration-300">
                       Enable 2FA
                     </button>
                   </div>
